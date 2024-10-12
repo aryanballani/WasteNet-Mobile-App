@@ -1,0 +1,84 @@
+@import url("https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap");
+h1 {
+  font-size: 1em;
+  font-family: "Afacad Flux", sans-serif;
+  margin-bottom: 0;
+  text-align: center;
+}
+
+.recipe {
+  font-size: 20px;
+}
+
+#recipes-list {
+  margin: 0;
+  padding: 0;
+  font-family: "Afacad Flux", sans-serif;
+}
+
+#exp-list {
+  margin-top: 0;
+  padding-top: 0;
+  font-family: "Afacad Flux", sans-serif;
+}
+
+#title {
+  color: #fafafa;
+  font-family: "Afacad Flux", sans-serif;
+  text-align: right;
+  font-size: 2em;
+  margin: 0 10px 0 0;
+}
+
+#nav {
+  margin-top: 0;
+  padding-top: 0;
+  padding-left: 0;
+  color: #fafafa;
+  font-family: "Afacad Flux", sans-serif;
+  font-size: 1.2em;
+  list-style-type: none;
+}
+
+#recipes-box, #exp-box {
+  border: double 6px;
+  box-shadow: 7px 5px 5px 2px rgba(2, 8, 2, 0.1);
+}
+
+#grocery-box {
+  border: double 6px;
+  box-shadow: 7px 5px 5px 2px rgba(2, 8, 2, 0.1);
+}
+
+#lower-boxes {
+  width: 80%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.lower {
+  line-height: 20px;
+}
+
+.bottom-boxes {
+  position: absolute;
+}
+
+.lower {
+  font-size: 0.7em;
+}
+
+.flex {
+  display: flex;
+  justify-content: center;
+}
+
+#menu-add {
+  font-family: "Afacad Flux", sans-serif;
+  margin-top: 10px;
+  width: 80%;
+  background-color: #fafafa;
+  border-radius: 50px;
+  border: 1px solid #fafafa;
+  box-shadow: 3px 3px 5px rgba(5, 10, 2, 0.1);
+}/*# sourceMappingURL=styles.css.map */
