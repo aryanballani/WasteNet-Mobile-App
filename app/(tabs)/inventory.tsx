@@ -1,18 +1,14 @@
-import React, { useState } from 'react';
-import { Image, StyleSheet, View, Text, FlatList, TouchableOpacity, Modal, TextInput, Button, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Image, StyleSheet, View, Text, FlatList, TouchableOpacity, Modal, TextInput, Button, Alert, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppLoading from "expo-app-loading";
 import { useFonts, Roboto_400Regular, Bangers_400Regular } from "@expo-google-fonts/dev";
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
-  const [items, setItems] = useState([
-    { name: 'Devin', quantity: 1, unit: 'units', expiration: '10/10/2021' },
-    { name: 'Dan', quantity: 2, unit: 'grams', expiration: '10/10/2021' },
-    { name: 'Dominic', quantity: 9, unit: 'kgs', expiration: '10/10/2021' },
-    { name: 'Jackson', quantity: 1, unit: 'units', expiration: '10/10/2021' },
-  ]);
-
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state to handle data fetching
   const [modalVisible, setModalVisible] = useState(false);
   const [currentItem, setCurrentItem] = useState<{ name: string; quantity: number; unit: string; expiration: string } | null>(null);
   const [operation, setOperation] = useState<string | null>(null);
@@ -23,8 +19,29 @@ export default function HomeScreen() {
     Roboto_400Regular
   });
 
+  // Fetching inventory data when the component is mounted
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userId = await AsyncStorage.getItem('user');
+        if (userId) {
+          const response = await fetch(`http://127.0.0.1:5000/inventory/user/${JSON.parse(userId)}`);
+          const data = await response.json();
+          setItems(data.data);  // Assuming 'data' contains an array of inventory items
+        }
+      } catch (error) {
+        console.error('Error fetching inventory:', error);
+      } finally {
+        setLoading(false); // Stop loading once data is fetched
+      }
+    };
+    
+    fetchData();
+  }, []);
+
   if (!fontsLoaded) return <AppLoading />;
 
+  // Function to update the quantity of an item
   const updateItemQuantity = () => {
     if (quantity && !isNaN(Number(quantity))) {
       const newItems = items
@@ -48,17 +65,17 @@ export default function HomeScreen() {
     setModalVisible(false);
   };
 
-  const openModal = (item: { name: string; quantity: number; unit: string; expiration: string }, op: string) => {
+  const openModal = (item, op: string) => {
     setCurrentItem(item);
     setOperation(op);
     setModalVisible(true);
   };
 
-  const renderItem = ({ item }: { item: { name: string; quantity: number; unit: string; expiration: string } }) => (
+  const renderItem = ({ item }: { item }) => (
     <View style={styles.card}>
       <View style={styles.cardContent}>
         <Text style={styles.itemTitle}>{item.name}</Text>
-        <Text style={styles.itemDetails}>Quantity: {item.quantity} {item.unit == "units" ? "" : item.unit}</Text>
+        <Text style={styles.itemDetails}>Quantity: {item.quantity} {item.unit}</Text>
         <Text style={styles.itemDetails}>Expires: {item.expiration}</Text>
       </View>
       <View style={styles.buttonsContainer}>
@@ -90,12 +107,18 @@ export default function HomeScreen() {
     >
       <View style={styles.container}>
         <Text style={styles.heading}>Inventory</Text>
-        <FlatList
-          data={items}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.name}
-          contentContainerStyle={styles.listContainer}
-        />
+
+        {/* Display loading spinner while data is being fetched */}
+        {loading ? (
+          <ActivityIndicator size="large" color="#4A90E2" />
+        ) : (
+          <FlatList
+            data={items}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.name}
+            contentContainerStyle={styles.listContainer}
+          />
+        )}
 
         {/* Quantity Input Modal */}
         <Modal
@@ -128,12 +151,13 @@ export default function HomeScreen() {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
     backgroundColor: '#F5F5F5',
-  },
+  },  
   reactLogo: {
     height: 1,
     width: 1,
@@ -247,4 +271,3 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 });
-
