@@ -8,13 +8,14 @@ const LoginScreen = () => {
   const router = useRouter(); // For navigation
 
   const handleLogin = async () => {
-    console.log('login');
+    console.log('logged in');
+    // Uncomment and implement the login logic here
+
     // if (!username || !password) {
     //   Alert.alert('Error', 'Please enter both username and password');
     //   return;
     // }
 
-    // // Here you would typically make an API call to authenticate the user
     // try {
     //   const response = await fetch('https://your-api-url/user/login', {
     //     method: 'GET', // Use POST for real-world applications
@@ -41,6 +42,7 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
+      {/* Login Form */}
       <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
@@ -63,7 +65,6 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
     backgroundColor: '#fff',
   },
