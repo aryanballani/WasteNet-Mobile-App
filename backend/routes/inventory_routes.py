@@ -24,17 +24,29 @@ def get_inventory():
 
 #     return jsonify({"status": "success", "data": item}), 200
 
-# 3. GET /user/<int:user_id> -> get items by user ID
-@inventory_bp.route('/user/<int:user_id>', methods=['GET'])
-def get_items_by_user(user_id):
+# # 3. GET /user/<int:user_id> -> get items by user ID
+# @inventory_bp.route('/user/<int:user_id>', methods=['GET'])
+# def get_items_by_user(user_id):
+#     if user_id <= 0:
+#         return jsonify({"status": "error", "message": "Invalid user ID"}), 422
+
+#     items = inventory.get_items_by_user(user_id)
+#     if not items:
+#         return jsonify({"status": "error", "message": "No items found for user"}), 404
+
+#     return jsonify({"status": "success", "data": items}), 200
+
+
+def get_items_by_user_logic(user_id):
     if user_id <= 0:
-        return jsonify({"status": "error", "message": "Invalid user ID"}), 422
+        return {"status": "error", "message": "Invalid user ID"}, 422
 
-    items = inventory.get_items_by_user(user_id)
+    items = inventory.get_items_by_user(user_id)  # Assuming this method fetches the items
     if not items:
-        return jsonify({"status": "error", "message": "No items found for user"}), 404
+        return {"status": "error", "message": "No items found for user"}, 404
 
-    return jsonify({"status": "success", "data": items}), 200
+    return {"status": "success", "data": items}, 200
+
 
 # 4. GET /search -> search by name and expiry_date
 @inventory_bp.route('/search', methods=['GET'])

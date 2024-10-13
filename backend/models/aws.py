@@ -8,7 +8,9 @@ import logging
 import boto3
 import json
 from botocore.exceptions import ClientError
-
+from flask import Blueprint, request, jsonify       # type: ignore
+from models.inventory import Inventory
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
@@ -60,7 +62,7 @@ def generate_conversation(bedrock_client,
 
     return response
 
-def main():
+def get_gen_ai_reponse(json_input, bedrock_client):
     """
     Entrypoint for Anthropic Claude 3 Sonnet example.
     """
@@ -76,31 +78,6 @@ def main():
     #     "role": "user",
     #     "content": [{"text": "These are my ingredients: potato, grapes, beets. Create 1 recipes using only these."}]
     # }
-    json_input = {
-                        "data": [
-                            {
-                                "_id": "670b2ce055f114ea88453793",
-                                "expiry_date": "Tue, 15 Oct 2024 00:00:00 GMT",
-                                "name": "apples",
-                                "quantity": 5,
-                                "user_id": 3
-                            },
-                            {
-                                "_id": "670b2d3b55f114ea88453794",
-                                "expiry_date": "Sat, 19 Oct 2024 00:00:00 GMT",
-                                "name": "eggs",
-                                "quantity": 20,
-                                "user_id": 3
-                            },
-                            {
-                                "_id": "670b2d4c55f114ea88453795",
-                                "expiry_date": "Sat, 12 Oct 2024 00:00:00 GMT",
-                                "name": "eggs",
-                                "quantity": 6,
-                                "user_id": 3
-                            }
-                        ],
-                        "status": "success"}
     message_1 = {
         "role": "user",
         "content": [{"text": json.dumps(json_input)}]}
@@ -108,7 +85,7 @@ def main():
 
     try:
 
-        bedrock_client = boto3.client(service_name='bedrock-runtime')
+        # bedrock_client = boto3.client(service_name='bedrock-runtime')
 
         # Start the conversation with the 1st message.
         messages.append(message_1)
