@@ -1,5 +1,6 @@
 import pymongo           # type: ignore
 import os
+from pymongo import ReturnDocument      # type: ignore
 from datetime import datetime
 
 class Inventory:
@@ -33,7 +34,7 @@ class Inventory:
         return True
 
     def update_item(self, name, expiry_date, update_data):
-        expiry_date = datetime.strptime(expiry_date, '%Y-%m-%d')
+
         query = {"name": name, "expiry_date": expiry_date}
         print(query)
         # Update the fields with new values (only fields passed in `update_data`)

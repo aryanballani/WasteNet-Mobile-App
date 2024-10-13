@@ -76,15 +76,14 @@ def add_item():
     except (ValueError, TypeError) as e:
         return jsonify({"status": "error", "message": "Invalid input data"}), 422
 
-# 6. POST /update -> Update an item
+# 6. PATCH /update -> Update an item
 @inventory_bp.route('/update', methods=['PATCH'])
 def update_inventory():
     data = request.get_json()  # Get the JSON data from the request body
-    
     name = data.get('name')
     expiry_date = data.get('expiry_date')
-    update_data = updated_item(data)  # Get the updated data from the request body
-    
+    update_data = data.get('update_data')  # Get the updated data from the request body
+
     # Validate the input
     if not name or not expiry_date:
         return jsonify({"status": "error", "message": "Missing name or expiry_date"}), 400
@@ -104,4 +103,4 @@ def update_inventory():
     if not updated_item:
         return jsonify({"status": "error", "message": "No item found to update"}), 404
 
-    return jsonify({"status": "success", "data": updated_item}), 200
+    return jsonify({"status": "success", "data": str(updated_item)}), 200
