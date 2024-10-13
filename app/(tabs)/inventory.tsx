@@ -1,52 +1,82 @@
-import { Image, StyleSheet, Platform, View, Text, FlatList, Button } from 'react-native';
-import AppLoading from "expo-app-loading";
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
-import { Collapsible } from '@/components/Collapsible';
-import Camera from 'react-native-camera';
-import ImagePicker from 'react-native-image-picker';
-
-import {
-  useFonts,
-  Roboto_400Regular,
-  Bangers_400Regular,
-  OpenSans_400Regular
-} from "@expo-google-fonts/dev";
 import React, { useState } from 'react';
+import { Image, StyleSheet, View, Text, FlatList, TouchableOpacity, Modal, TextInput, Button, Alert } from 'react-native';
+import AppLoading from "expo-app-loading";
+import { useFonts, Roboto_400Regular, Bangers_400Regular } from "@expo-google-fonts/dev";
+import ParallaxScrollView from '@/components/ParallaxScrollView';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
-    const [items, setItem] = useState([
-        {name: 'Devin',
-         quantity: 1,
-         expiration: '10/10/2021'
-        },
-        {name: 'Dan',
-         quantity: 2,
-         expiration: '10/10/2021'
-        },
-        {name: 'Dominic',
-         quantity: 9,
-         expiration: '10/10/2021'
-        },
-        {name: 'Jackson',
-         expiration: '10/10/2021',
-         quantity: 1
-        },
-      ])
+  const [items, setItems] = useState([
+    { name: 'Devin', quantity: 1, unit: 'units', expiration: '10/10/2021' },
+    { name: 'Dan', quantity: 2, unit: 'grams', expiration: '10/10/2021' },
+    { name: 'Dominic', quantity: 9, unit: 'kgs', expiration: '10/10/2021' },
+    { name: 'Jackson', quantity: 1, unit: 'units', expiration: '10/10/2021' },
+  ]);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentItem, setCurrentItem] = useState<{ name: string; quantity: number; unit: string; expiration: string } | null>(null);
+  const [operation, setOperation] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState("");
 
   let [fontsLoaded] = useFonts({
     Bangers_400Regular,
     Roboto_400Regular
   });
 
-  if (!fontsLoaded) return <AppLoading/>
+  if (!fontsLoaded) return <AppLoading />;
 
-  const removeItem = (item: string): void => {
-    const newItems = items.filter(i => i.name !== item);
-    setItem(newItems);
-  }
+  const updateItemQuantity = () => {
+    if (quantity && !isNaN(Number(quantity))) {
+      const newItems = items
+        .map((item) => {
+          if (currentItem && item.name === currentItem.name) {
+            let updatedQuantity =
+              operation === 'add'
+                ? item.quantity + parseInt(quantity)
+                : item.quantity - parseInt(quantity);
+
+            return { ...item, quantity: updatedQuantity };
+          }
+          return item;
+        })
+        .filter((item) => item.quantity > 0); // Remove items with zero or negative quantity
+
+      setItems(newItems);
+    } else {
+      Alert.alert('Invalid Quantity', 'Please enter a valid number.');
+    }
+    setModalVisible(false);
+  };
+
+  const openModal = (item: { name: string; quantity: number; unit: string; expiration: string }, op: string) => {
+    setCurrentItem(item);
+    setOperation(op);
+    setModalVisible(true);
+  };
+
+  const renderItem = ({ item }: { item: { name: string; quantity: number; unit: string; expiration: string } }) => (
+    <View style={styles.card}>
+      <View style={styles.cardContent}>
+        <Text style={styles.itemTitle}>{item.name}</Text>
+        <Text style={styles.itemDetails}>Quantity: {item.quantity} {item.unit == "units" ? "" : item.unit}</Text>
+        <Text style={styles.itemDetails}>Expires: {item.expiration}</Text>
+      </View>
+      <View style={styles.buttonsContainer}>
+        <TouchableOpacity
+          style={[styles.button, styles.addButton]}
+          onPress={() => openModal(item, 'add')}
+        >
+          <Ionicons name="add-circle-outline" size={24} color="white" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.button, styles.deleteButton]}
+          onPress={() => openModal(item, 'remove')}
+        >
+          <Ionicons name="remove-circle-outline" size={24} color="white" />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   return (
     <ParallaxScrollView
@@ -56,120 +86,165 @@ export default function HomeScreen() {
           source={require('@/assets/images/partial-react-logo.png')}
           style={styles.reactLogo}
         />
-      }>
-      <ThemedView>
-        <View> 
-          <View style={styles.topBar}>
-          </View>
-        </View>
-      </ThemedView>
-      <View>
-        
-        <View style={styles.recipeBox}>
-        <View id='recipes-box' style={styles.topRecipes}>
-          <Text style={styles.recipesText}>Inventory</Text>
-        </View>
-        <Text>(Check to remove item)</Text>
-      <View style={styles.lowerBoxes}>
-          <FlatList
-        data={items}
-        renderItem={({item}: {item: {name: string, quantity: number, expiration: string}}) => 
-            <View style={styles.remove}>
-                <Button 
-                onPress={() => {
-                    removeItem(item.name);
-                }}
-        title={item.name + " (Q:" + item.quantity + ", Exp:" + item.expiration + ")"}
-      />
-            </View>}
+      }
+    >
+      <View style={styles.container}>
+        <Text style={styles.heading}>Inventory</Text>
+        <FlatList
+          data={items}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.name}
+          contentContainerStyle={styles.listContainer}
         />
-      </View>
-        </View>
-        
+
+        {/* Quantity Input Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>
+                {operation === 'add' ? 'Add Quantity' : 'Remove Quantity'}
+              </Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter quantity"
+                keyboardType="numeric"
+                value={quantity}
+                onChangeText={(text) => setQuantity(text)}
+              />
+              <View style={styles.modalButtons}>
+                <Button title="Cancel" onPress={() => setModalVisible(false)} />
+                <Button title="OK" onPress={updateItemQuantity} />
+              </View>
+            </View>
+          </View>
+        </Modal>
       </View>
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  stepContainer: {
-    gap: 4,
-    marginBottom: 4,
-  },
-  remove: {
-    marginRight: 200,
-    width: 200,
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#F5F5F5',
   },
   reactLogo: {
     height: 1,
-    width:1,
-    bottom: 0,
-    left: 0,
+    width: 1,
     position: 'absolute',
   },
-  title: {
-    textAlign: 'right',
-    marginTop: 20,
-    position: 'relative',
-    fontSize: 30,
-    fontFamily: "Roboto_400Regular"
+  heading: {
+    fontSize: 36,
+    fontFamily: 'Roboto_700Bold',
+    textAlign: 'center',
+    color: '#4A90E2',
+    marginBottom: 16,
   },
-  topBar: {
-    position: "relative",
+  listContainer: {
+    paddingBottom: 20,
   },
-  first: {
-    marginTop: -10,
+  card: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  menu: {
-    fontSize: 30
-  },
-  recipeBox: {
+  cardContent: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
-  topRecipes: {
+  itemTitle: {
+    fontSize: 16,
+    fontFamily: 'Roboto_700Bold',
+    color: '#333333',
+    marginBottom: 4,
+  },
+  itemDetails: {
+    fontSize: 14,
+    fontFamily: 'Roboto_400Regular',
+    color: '#666666',
+  },
+  buttonsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  button: {
+    marginLeft: 10,
+    borderRadius: 8,
+    padding: 8,
+  },
+  addButton: {
+    backgroundColor: '#4A90E2',
+  },
+  deleteButton: {
+    backgroundColor: '#FF5A5F',
+  },
+  modalOverlay: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: 30,
-    marginTop: 20,
-    backgroundColor: 'white',
-    width: 320,
-  }, 
-  recipesText: {
-    fontSize: 50,
-    color: "black"
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
-  exp: {
-    fontSize: 30,
-    marginTop: 40,
-    marginLeft: 20,
-    marginRight: 20,
-    backgroundColor: 'white',
-    width: 130,
-    borderWidth: 3,
-    padding: 5,
-  }, 
-  recipeText: {
-    fontSize: 30,
-    color: "black"
+  modalContent: {
+    width: 300,
+    padding: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    alignItems: 'center',
   },
-  lowerBoxes: {
-    marginTop: 10,
-    marginLeft: 70,
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: 'space-between'
+  modalTitle: {
+    fontSize: 20,
+    fontFamily: 'Roboto_700Bold',
+    marginBottom: 12,
+    color: '#333333',
   },
-  lower: {
-    fontSize: 20
-  }, list: {
-    fontSize: 18,
-  }
+  input: {
+    width: '100%',
+    padding: 10,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 16,
+    fontSize: 16,
+    fontFamily: 'Roboto_400Regular',
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  addItemButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#4A90E2',
+    borderRadius: 8,
+    paddingVertical: 12,
+    marginTop: 8,
+  },
+  addItemButtonText: {
+    color: '#FFFFFF',
+    fontFamily: 'Roboto_700Bold',
+    fontSize: 16,
+    marginLeft: 8,
+  },
 });
+

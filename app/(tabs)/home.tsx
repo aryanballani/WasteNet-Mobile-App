@@ -67,7 +67,7 @@ export default function HomeScreen() {
         <Text style={styles.inventoryItemName}>{item.name}</Text>
         <View style={styles.inventoryItemDetails}>
           <Text style={styles.inventoryItemText}>
-            {item.quantity} {item.unit_of_measurement == "units" ? "" : item.unit_of_measurement} 
+            {item.quantity} {item.unit_of_measurement} 
           </Text>
           <Text style={styles.inventoryItemText}>
             Expires: {formatExpiryDate(item.expiry_date)}
