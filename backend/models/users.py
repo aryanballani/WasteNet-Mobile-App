@@ -25,6 +25,12 @@ class Users:
             return True
         return False
     
+    def is_userid_taken(self, user_id):  
+        docs = self.collection.find({'_id': user_id})
+        if list(docs):
+            return True
+        return False
+    
     def create_user(self, username, password, email):
         hashed_password = self.hash_password(password)
         user_document = {

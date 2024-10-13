@@ -2,7 +2,7 @@ from flask import Flask         # type: ignore
 from routes.inventory_routes import inventory_bp
 from routes.recipe_routes import recipe_bp
 from routes.user_routes import user_bp
-from flask_cors import CORS
+from flask_cors import CORS     # type: ignore
 
 app = Flask(__name__)
 

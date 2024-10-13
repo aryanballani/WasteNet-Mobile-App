@@ -35,4 +35,3 @@ def suggest_recipes():
 
     return jsonify(response), status_code
 
-
