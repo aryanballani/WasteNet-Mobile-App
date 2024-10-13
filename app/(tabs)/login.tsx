@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router'; // For navigation
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
@@ -9,34 +10,45 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     console.log('logged in');
-    // if (!username || !password) {
-    //   Alert.alert('Error', 'Please enter both username and password');
-    //   return;
-    // }
+    if (!username || !password) {
+      Alert.alert('Error', 'Please enter both username and password');
+      setUsername('');
+      setPassword('');
+      return;
+    }
 
-    // // Here you would typically make an API call to authenticate the user
-    // try {
-    //   const response = await fetch('https://your-api-url/user/login', {
-    //     method: 'GET', // Use POST for real-world applications
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify({ username, password }),
-    //   });
+    // Here you would typically make an API call to authenticate the user
+    try {
+      const response = await fetch('http://127.0.0.1:5000/users/login', {
+        method: 'POST', // Use POST for real-world applications
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, password }),
+      });
 
-    //   if (!response.ok) {
-    //     throw new Error('Invalid credentials');
-    //   }
+      if (!response.ok) {
+        Alert.alert('Login Failed', 'Invalid username or password');
+        setUsername('');
+        setPassword('');
+        throw new Error('Invalid credentials');
+      }
 
-    //   const data = await response.json();
-    //   Alert.alert('Success', `Welcome, ${data.username}!`);
-      
-    //   // Redirect or navigate to another screen on successful login
-    //   router.push('/home'); // Change '/home' to your home screen route
+      const data = await response.json();
+      console.log(data);
+      // Alert.alert('Success', `Welcome, ${data.username}!`);
+      // localStorage.setItem('user', JSON.stringify(data.token));
+      AsyncStorage.setItem('user', JSON.stringify(data.token))
+      // Redirect or navigate to another screen on successful login
+      router.push('/home'); // Change '/home' to your home screen route
 
-    // } catch (error) {
-    //   Alert.alert('Login Failed', error.message || 'Something went wrong');
-    // }
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert('Login Failed', error.message);
+      } else {
+        Alert.alert('Login Failed', 'Something went wrong');
+      }
+    }
   };
 
   return (

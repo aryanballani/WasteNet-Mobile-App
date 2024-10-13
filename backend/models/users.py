@@ -1,6 +1,7 @@
 import pymongo # type: ignore
 import os
 import bcrypt   # type: ignore
+from bson.objectid import ObjectId
 
 class Users:
     def __init__(self):
@@ -21,6 +22,12 @@ class Users:
 
     def is_username_taken(self, username):  
         docs = self.collection.find({'username': username})
+        if list(docs):
+            return True
+        return False
+    
+    def is_userid_taken(self, user_id): 
+        docs = self.collection.find({'_id': ObjectId(user_id)})
         if list(docs):
             return True
         return False

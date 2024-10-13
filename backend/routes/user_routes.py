@@ -2,7 +2,6 @@ from flask import Blueprint, request, jsonify           # type: ignore
 import os
 from datetime import datetime, timedelta
 from models.users import Users  # Assuming you have a User model
-import jwt              # type: ignore
 
 user_bp = Blueprint('user', __name__)
 
