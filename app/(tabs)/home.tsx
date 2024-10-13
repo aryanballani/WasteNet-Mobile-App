@@ -40,7 +40,7 @@ export default function HomeScreen() {
           const response = await fetch(`http://127.0.0.1:5000/inventory/user/${JSON.parse(userId)}`);
           if (response.ok) {
             const data = await response.json();
-            setTopInventory(data);
+            setTopInventory(data.data);
           } else if (response.status === 404) {
             setTopInventory([]);
           } else {
@@ -61,36 +61,47 @@ export default function HomeScreen() {
     return null; // or a loading component
   }
 
-  const renderMenuItem = ({ item }) => (
-    <TouchableOpacity
-      style={styles.menuItem}
-      onPress={() => router.push(`/${item.key.toLowerCase().replace(' ', '')}`)}
-    >
-      <Ionicons name={item.icon} size={24} color="#4A90E2" />
-      <Text style={styles.menuItemText}>{item.key}</Text>
+  const renderInventoryItem = ({ item }: { item: { name: string; quantity: number; unit_of_measurement: string; expiry_date: string; _id: string } }) => (
+    <TouchableOpacity style={styles.inventoryItem}>
+      <View style={styles.inventoryItemContent}>
+        <Text style={styles.inventoryItemName}>{item.name}</Text>
+        <View style={styles.inventoryItemDetails}>
+          <Text style={styles.inventoryItemText}>
+            {item.quantity} {item.unit_of_measurement == "units" ? "" : item.unit_of_measurement} 
+          </Text>
+          <Text style={styles.inventoryItemText}>
+            Expires: {formatExpiryDate(item.expiry_date)}
+          </Text>
+        </View>
+      </View>
     </TouchableOpacity>
   );
 
-  const renderInventoryItem = ({ item }) => (
-    <TouchableOpacity style={styles.inventoryItem}>
-      <Text style={styles.inventoryItemText}>{item.name}</Text>
-    </TouchableOpacity>
-  );
+  const formatExpiryDate = (dateString: string | number | Date) => {
+    console.log("1")
+    console.log(dateString);
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  };
 
   return (
     <ParallaxScrollView
-      headerBackgroundColor="#FFFFFF"
+      headerBackgroundColor={{ dark: "#000000", light: "#FFFFFF" }}
       headerImage={
         <View style={styles.headerContainer}>
           <SvgXml xml={headerSvg} width="100%" height="100%" />
         </View>
       }
     >
-      <View style={styles.container}>
-        <View style={styles.contentContainer}>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Top Inventory Items</Text>
-            <Text style={styles.emptyInventoryText}>Feeling Hungry? Generate some Recipes for you!</Text>
+      <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Top Recipes</Text>
+            <TouchableOpacity
+              style={styles.recipeButton}
+              onPress={() => router.push('/recipes')}
+            >
+              <Text style={styles.recipeButtonText}>Discover New Recipes</Text>
+              <Ionicons name="fast-food-outline" size={24} color="#FFFFFF" />
+            </TouchableOpacity>
           </View>
 
           <View style={styles.row}>
@@ -100,7 +111,7 @@ export default function HomeScreen() {
               <FlatList
                 data={topInventory}
                 renderItem={renderInventoryItem}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item._id.toString()}
               />
             ) : (
               <Text style={styles.emptyInventoryText}>Add items to see them here!</Text>
@@ -111,16 +122,17 @@ export default function HomeScreen() {
               <Text style={styles.sectionTitle}>Got Groceries?</Text>
               <TouchableOpacity
                 style={styles.addItemButton}
-                onPress={() => router.push('/additem')}
+                onPress={() => router.push('/addItem')}
               >
                 <Ionicons name="add-circle-outline" size={24} color="#FFFFFF" />
-                <Text style={styles.addItemButtonText}>Add Item</Text>
+                <Text style={styles.addItemButtonText}>Add New Items</Text>
               </TouchableOpacity>
+              <Text style={styles.groceryHelperText}>
+                Add your groceries to keep track of your pantry and get recommendations!
+              </Text>
             </View>
           </View>
-        </View>
-      </View>
-    </ParallaxScrollView>
+      </ParallaxScrollView>
   );
 }
 
@@ -164,13 +176,28 @@ const styles = StyleSheet.create({
     width: '48%',
   },
   inventoryItem: {
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
   },
-  inventoryItemText: {
+  inventoryItemContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  inventoryItemName: {
     fontSize: 16,
+    fontFamily: 'Roboto_700Bold',
+    color: '#333333',
+    flex: 1,
+  },
+  inventoryItemDetails: {
+    alignItems: 'flex-end',
+  },
+  inventoryItemText: {
+    fontSize: 14,
     fontFamily: 'Roboto_400Regular',
+    color: '#666666',
   },
   emptyInventoryText: {
     fontSize: 16,
@@ -178,11 +205,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#888',
     marginTop: 20,
-  },
-  listItem: {
-    fontSize: 14,
-    fontFamily: 'Roboto_400Regular',
-    marginBottom: 4,
   },
   addItemButton: {
     flexDirection: 'row',
@@ -198,5 +220,27 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto_700Bold',
     fontSize: 16,
     marginLeft: 8,
+  },
+  groceryHelperText: {
+    fontSize: 14,
+    fontFamily: 'Roboto_400Regular',
+    color: '#666666',
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  recipeButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#5AB9EA',
+    borderRadius: 8,
+    paddingVertical: 12,
+    marginTop: 8,
+  },
+  recipeButtonText: {
+    color: '#FFFFFF',
+    fontFamily: 'Roboto_700Bold',
+    fontSize: 16,
+    marginRight: 8,
   },
 });
