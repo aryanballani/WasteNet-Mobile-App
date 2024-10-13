@@ -4,8 +4,6 @@ import { useFonts, Roboto_400Regular, Roboto_700Bold } from "@expo-google-fonts/
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedView } from '@/components/ThemedView';
-import { Collapsible } from '@/components/Collapsible';
 import { SvgXml } from 'react-native-svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -68,7 +66,7 @@ export default function HomeScreen() {
         <Text style={styles.inventoryItemName}>{item.name}</Text>
         <View style={styles.inventoryItemDetails}>
           <Text style={styles.inventoryItemText}>
-            {item.quantity} {item.unit_of_measurement == "units" ? "" : item.unit_of_measurement} 
+            {item.quantity} {item.unit_of_measurement === "units" ? "" : item.unit_of_measurement} 
           </Text>
           <Text style={styles.inventoryItemText}>
             Expires: {formatExpiryDate(item.expiry_date)}
@@ -79,8 +77,6 @@ export default function HomeScreen() {
   );
 
   const formatExpiryDate = (dateString: string | number | Date) => {
-    console.log("1")
-    console.log(dateString);
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
@@ -95,53 +91,50 @@ export default function HomeScreen() {
       }
     >
       <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Top Recipes</Text>
-            <TouchableOpacity
-              style={styles.recipeButton}
-              onPress={() => router.push('/recipes')}
-            >
-              <Text style={styles.recipeButtonText}>Discover New Recipes</Text>
-              <Ionicons name="fast-food-outline" size={24} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
+        <Text style={styles.sectionTitle}>Top Recipes</Text>
+        <TouchableOpacity
+          style={styles.recipeButton}
+          onPress={() => router.push('/recipes')}
+        >
+          <Text style={styles.recipeButtonText}>Discover New Recipes</Text>
+          <Ionicons name="fast-food-outline" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+      </View>
 
-          <View style={styles.row}>
-            <View style={[styles.section, styles.halfWidth]}>
-              <Text style={styles.sectionTitle}>Upcoming Exp.</Text>
-              {topInventory.length > 0 ? (
-              <FlatList
-                data={topInventory}
-                renderItem={renderInventoryItem}
-                keyExtractor={(item) => item._id.toString()}
-              />
-            ) : (
-              <Text style={styles.emptyInventoryText}>Add items to see them here!</Text>
-            )}
-            </View>
+      <View style={styles.row}>
+        <View style={[styles.section, styles.halfWidth]}>
+          <Text style={styles.sectionTitle}>Upcoming Exp.</Text>
+          {topInventory.length > 0 ? (
+            <FlatList
+              data={topInventory}
+              renderItem={renderInventoryItem}
+              keyExtractor={(item) => item._id.toString()}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <Text style={styles.emptyInventoryText}>Add items to see them here!</Text>
+          )}
+        </View>
 
-            <View style={[styles.section, styles.halfWidth]}>
-              <Text style={styles.sectionTitle}>Got Groceries?</Text>
-              <TouchableOpacity
-                style={styles.addItemButton}
-                onPress={() => router.push('/addItem')}
-              >
-                <Ionicons name="add-circle-outline" size={24} color="#FFFFFF" />
-                <Text style={styles.addItemButtonText}>Add New Items</Text>
-              </TouchableOpacity>
-              <Text style={styles.groceryHelperText}>
-                Add your groceries to keep track of your pantry and get recommendations!
-              </Text>
-            </View>
-          </View>
-      </ParallaxScrollView>
+        <View style={[styles.section, styles.halfWidth]}>
+          <Text style={styles.sectionTitle}>Got Groceries?</Text>
+          <TouchableOpacity
+            style={styles.addItemButton}
+            onPress={() => router.push('/addItem')}
+          >
+            <Ionicons name="add-circle-outline" size={24} color="#FFFFFF" />
+            <Text style={styles.addItemButtonText}>Add New Items</Text>
+          </TouchableOpacity>
+          <Text style={styles.groceryHelperText}>
+            Add your groceries to keep track of your pantry and get recommendations!
+          </Text>
+        </View>
+      </View>
+    </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
   headerContainer: {
     width: '100%',
     height: 80,
@@ -149,13 +142,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
   },
-  contentContainer: {
-    flex: 1,
-  },
   section: {
     backgroundColor: '#FFFFFF',
     borderRadius: 8,
-    padding: 16,
+    padding: 12,
     marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -164,20 +154,21 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 18, // Adjusted size
     fontFamily: 'Roboto_700Bold',
-    marginBottom: 12,
+    marginBottom: 8, // Adjusted margin
     color: '#333333',
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginBottom: 16,
   },
   halfWidth: {
     width: '48%',
   },
   inventoryItem: {
-    paddingVertical: 12,
+    paddingVertical: 10, // Adjusted size
     borderBottomWidth: 1,
     borderBottomColor: '#E0E0E0',
   },
@@ -196,12 +187,12 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   inventoryItemText: {
-    fontSize: 14,
+    fontSize: 12, // Adjusted size
     fontFamily: 'Roboto_400Regular',
     color: '#666666',
   },
   emptyInventoryText: {
-    fontSize: 16,
+    fontSize: 14, // Adjusted size
     fontFamily: 'Roboto_400Regular',
     textAlign: 'center',
     color: '#888',
@@ -213,20 +204,20 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#4A90E2',
     borderRadius: 8,
-    paddingVertical: 12,
+    paddingVertical: 10, // Adjusted size
     marginTop: 8,
   },
   addItemButtonText: {
     color: '#FFFFFF',
     fontFamily: 'Roboto_700Bold',
-    fontSize: 16,
+    fontSize: 14, // Adjusted size
     marginLeft: 8,
   },
   groceryHelperText: {
-    fontSize: 14,
+    fontSize: 12, // Adjusted size
     fontFamily: 'Roboto_400Regular',
     color: '#666666',
-    marginTop: 8,
+    marginTop: 6, // Adjusted size
     textAlign: 'center',
   },
   recipeButton: {
@@ -235,13 +226,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#5AB9EA',
     borderRadius: 8,
-    paddingVertical: 12,
+    paddingVertical: 10, // Adjusted size
     marginTop: 8,
   },
   recipeButtonText: {
     color: '#FFFFFF',
     fontFamily: 'Roboto_700Bold',
-    fontSize: 16,
+    fontSize: 14, // Adjusted size
     marginRight: 8,
   },
 });

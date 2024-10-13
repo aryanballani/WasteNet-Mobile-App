@@ -1,116 +1,100 @@
-import { Image, StyleSheet, View, Text, FlatList, Button } from 'react-native';
+import { Image, StyleSheet, View, Text, FlatList, Button, TouchableOpacity } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import React, { useState } from 'react';
+import { useFonts, Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/roboto';
 
 export default function HomeScreen() {
-    //For backend, randomize this state so more recipes can be made.
     const [items, setItem] = useState([
-        {name: 'Eggs and spam',
-         ingredients: "Eggs, spam",
-         recipe: '10/10/2021'
-        },
-        {name: 'Rice seaweed',
-         ingredients: "Rice, seaweed",
-         recipe: '10/10/2021'
-        },
-        {name: 'Dominic',
-         ingredients: "Rice, seaweed",
-         recipe: '10/10/2021'
-        }
-      ])
+        { name: 'Eggs and Spam', ingredients: "Eggs, Spam", recipe: '10/10/2021' },
+        { name: 'Rice Seaweed', ingredients: "Rice, Seaweed", recipe: '10/10/2021' },
+        { name: 'Dominic', ingredients: "Rice, Seaweed", recipe: '10/10/2021' }
+    ]);
 
-  const removeItem = (item: string): void => {
-    const newItems = items.filter(i => i.name !== item);
-    setItem(newItems);
-  }
+    const removeItem = (item: string): void => {
+        const newItems = items.filter(i => i.name !== item);
+        setItem(newItems);
+    };
 
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={<Image/>}>
-      <View>
-        
-        <View style={styles.recipeBox}>
-        <View id='recipes-box'>
-          <Text style={styles.recipesText}>Recipes</Text>
+    const renderItem = ({ item }: { item: { name: string; ingredients: string; recipe: string } }) => (
+        <View style={styles.recipeItem}>
+            <TouchableOpacity onPress={() => removeItem(item.name)}>
+                <Text style={styles.recipeName}>{item.name}</Text>
+            </TouchableOpacity>
+            <Text style={styles.ingredients}>Ingredients: {item.ingredients}</Text>
+            <Text style={styles.recipeDate}>Recipe Date: {item.recipe}</Text>
         </View>
-      <View style={styles.lowerBoxes}>
-          <FlatList data={items}
-        renderItem={({item}: {item: {name: string, ingredients: string, recipe: string}}) =>
-            <View style={styles.recipes}>
-                <Button onPress={() => {removeItem(item.name);}} title={item.name}/>
-      <Text style={styles.ingredients}>Ingredients: {item.ingredients}</Text>
-      <Text style={styles.ingredients}>Recipe: {item.recipe}</Text>
-            </View>}/>
-      </View>
-      <Button
-        title="Generate More"
-        onPress={() => alert('Simple Button pressed')}
-        />
-        </View>
-        
-      </View>
-    </ParallaxScrollView>
-  );
+    );
+
+    return (
+        <ParallaxScrollView
+            headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+            headerImage={<Image style={styles.headerImage} source={{ uri: 'your-image-url-here' }} />}
+        >
+            <View style={styles.container}>
+                <Text style={styles.recipesText}>Recipes</Text>
+                <FlatList
+                    data={items}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.name}
+                    contentContainerStyle={styles.listContainer}
+                />
+                <Button
+                    title="Generate More"
+                    onPress={() => alert('Generate More button pressed')}
+                    color="#5AB9EA" // Button color
+                />
+            </View>
+        </ParallaxScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
-  ingredients: {
-    marginLeft: 10,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  stepContainer: {
-    gap: 4,
-    marginBottom: 4,
-  },
-  recipes: {
-    marginTop: 30,
-    width: 270,
-    borderWidth: 3,
-    height: 200,
-  },
-  title: {
-    textAlign: 'right',
-    marginTop: 20,
-    position: 'relative',
-    fontSize: 30,
-  },
-  first: {
-    marginTop: -10,
-  },
-  recipeBox: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  recipesText: {
-    fontSize: 50,
-    color: "black"
-  },
-  exp: {
-    fontSize: 30,
-    marginTop: 40,
-    marginLeft: 20,
-    marginRight: 20,
-    backgroundColor: 'white',
-    width: 130,
-    borderWidth: 3,
-    padding: 5,
-  }, 
-  lowerBoxes: {
-    marginLeft: 30,
-    marginTop: 10,
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: 'space-between'
-  },
-  lower: {
-    fontSize: 20
-  }, list: {
-    fontSize: 18,
-  }
+    container: {
+        flex: 1,
+        padding: 16,
+        alignItems: 'center',
+    },
+    headerImage: {
+        width: '100%',
+        height: 200,
+        resizeMode: 'cover',
+    },
+    recipesText: {
+        fontSize: 32,
+        fontFamily: 'Roboto_700Bold',
+        marginVertical: 20,
+        color: "#333333",
+    },
+    listContainer: {
+        paddingBottom: 20,
+    },
+    recipeItem: {
+        width: '100%',
+        padding: 16,
+        marginBottom: 12,
+        borderRadius: 8,
+        backgroundColor: '#FFFFFF',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.2,
+        shadowRadius: 1.5,
+        elevation: 2,
+    },
+    recipeName: {
+        fontSize: 20,
+        fontFamily: 'Roboto_700Bold',
+        color: '#4A90E2',
+    },
+    ingredients: {
+        fontSize: 16,
+        fontFamily: 'Roboto_400Regular',
+        color: '#666666',
+        marginTop: 4,
+    },
+    recipeDate: {
+        fontSize: 14,
+        fontFamily: 'Roboto_400Regular',
+        color: '#888888',
+        marginTop: 4,
+    },
 });

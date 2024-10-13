@@ -52,7 +52,7 @@ export default function HomeScreen() {
                 ? item.quantity + parseInt(quantity)
                 : item.quantity - parseInt(quantity);
 
-                const response = await fetch('http://127.0.0.1:5000/inventory/update', {
+                const response = await fetch('http://192.168.137.183:5001/inventory/update', {
                   method: 'PATCH', // Use POST for real-world applications
                   headers: {
                     'Content-Type': 'application/json',
