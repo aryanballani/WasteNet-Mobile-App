@@ -19,7 +19,7 @@ def get_inventory():
 # 2. GET /user/<int:user_id> -> get items by user ID
 @inventory_bp.route('/user/<int:user_id>', methods=['GET'])
 def get_items_by_user(user_id):
-    if user_id <= 0 or not user_model.is_userid_taken(user_id):
+    if not user_model.is_userid_taken(user_id):
         return jsonify({"status": "error", "message": "Invalid user ID"}), 422
 
     items = inventory.get_items_by_user(user_id)
@@ -54,10 +54,10 @@ def add_item():
         name = data.get('name')
         quantity = int(data.get('quantity'))
         expiry_date = datetime.strptime(data.get('expiry_date'), '%Y-%m-%d')
-        unit_of_measure = data.get('unit_of_measure')
-        user_id = int(data.get('user_id'))
+        unit_of_measure = data.get('unit_of_measurement')
+        user_id = data.get('user_id')
 
-        if not name or quantity <= 0 or user_id <= 0:
+        if not name or quantity <= 0:
             raise ValueError("Invalid data types or values")
 
         added = inventory.add_item(name, quantity, unit_of_measure, expiry_date, user_id)
@@ -68,6 +68,7 @@ def add_item():
             return jsonify({"status": "error", "message": "Error while adding item"}), 400
 
     except (ValueError, TypeError) as e:
+        print(e)
         return jsonify({"status": "error", "message": "Invalid input data"}), 422
 
 # 5. PATCH /update -> Update an item
@@ -101,7 +102,7 @@ def update_inventory():
 
 
 def get_items_by_user_logic(user_id):
-    if user_id <= 0 or not user_model.is_userid_taken(user_id):
+    if not user_model.is_userid_taken(user_id):
         return {"status": "error", "message": "Invalid user ID"}, 422
 
     items = inventory.get_items_by_user(user_id)  # Assuming this method fetches the items

@@ -24,17 +24,19 @@ class Inventory:
         database = client.get_database('dubhacks')
         self.collection = database.get_collection('inventory')
 
-    def add_item(self, name, quantity, expiry_date, user_id):
+    def add_item(self, name, quantity, unit_of_measurement, expiry_date, user_id):
         people_documents = {
                             "name": name,
                             "quantity": quantity,
-                            "expiry_date": expiry_date,   # May 7, 1954
+                            "unit_of_measurement": unit_of_measurement,
+                            "expiry_date": expiry_date,
                             "user_id": user_id
                             }
-         
         inserted_documents = self.collection.insert_one(people_documents)
-        print(inserted_documents)
-        return True
+        if inserted_documents is not None:
+            return True
+        else:
+            return False
 
     def update_item(self, name, expiry_date, update_data):
 
