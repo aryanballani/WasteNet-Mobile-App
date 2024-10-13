@@ -1,4 +1,4 @@
-import pymongo
+import pymongo           # type: ignore
 import os
 from datetime import datetime
 
@@ -12,7 +12,7 @@ class Inventory:
             print("Connected to MongoDB successfully")
         except Exception:
             print("Connection Failed")
-            print("Error:" + Exception)
+            print("Error:" + str(Exception))
             
         print(client.list_database_names())
     
@@ -40,7 +40,7 @@ class Inventory:
         updated_item = self.collection.find_one_and_update(
             query,
             {"$set": update_data},
-            return_document=ReturnDocument.AFTER  # Returns the updated document
+            return_document=ReturnDocument.AFTER  # Returns the updated document # type: ignore
         )
         
         return updated_item
