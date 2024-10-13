@@ -6,7 +6,7 @@ from flask_cors import CORS     # type: ignore
 
 app = Flask(__name__)
 
-CORS(app, origins=['http://localhost:8081'])
+CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "OPTIONS"], "allow_headers": "*"}})
 # CORS(app, resources={r"/*": {
 #     "origins": "*",
 #     "methods": ["GET", "POST", "OPTIONS"],
@@ -19,5 +19,5 @@ app.register_blueprint(recipe_bp, url_prefix='/recipes')
 app.register_blueprint(user_bp, url_prefix='/users')
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5001)  # Ensure this is set
+    app.run( port=5001)  # Ensure this is set
 

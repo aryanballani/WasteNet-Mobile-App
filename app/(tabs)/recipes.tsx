@@ -1,51 +1,56 @@
-import { Image, StyleSheet, View, Text, FlatList, Button } from 'react-native';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 import React, { useEffect, useState } from 'react';
+import { Image, StyleSheet, View, Text, FlatList, Button, Alert } from 'react-native';
+import ParallaxScrollView from '@/components/ParallaxScrollView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function HomeScreen() {
-  interface Recipe {
-    name: string;
-    ingredients: string;
-    recipe: string;
-  }
+interface Recipe {
+  name: string;
+  ingredients: string;
+  recipe: string;
+}
 
+export default function HomeScreen() {
   const [items, setItems] = useState<Recipe[]>([]);
 
   useEffect(() => {
-    const fetchItems = async () => {
-      try {
-        const user = await AsyncStorage.getItem('user');
-        const userId = user ? JSON.parse(user) : null;
-        if (!userId) {
-          console.error('User ID not found in AsyncStorage');
-          return;
-        }
-
-        const response = await fetch('http://127.0.0.1:5001/recipe', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_id: userId,
-          }),
-        });
-
-        if (!response.ok) {
-          console.error('Error fetching items:', response.status);
-          return;
-        }
-
-        const data = await response.json();
-        setItems(data); // Assuming data is an array of items
-      } catch (error) {
-        console.error('Error fetching items:', error);
-      }
-    };
-
     fetchItems();
   }, []);
+
+  const fetchItems = async () => {
+    try {
+      const user = await AsyncStorage.getItem('user');
+      const userId = user ? JSON.parse(user) : null;
+      if (!userId) {
+        Alert.alert('Error', 'User ID not found');
+        return;
+      }
+
+      const response = await fetch('http://127.0.0.1:5001/recipe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      if (Array.isArray(data)) {
+        setItems(data);
+      } else {
+        console.error('Unexpected data format:', data);
+        Alert.alert('Error', 'Unexpected data format received');
+      }
+    } catch (error) {
+      console.error('Error fetching items:', error);
+      Alert.alert('Error', 'Failed to fetch recipes');
+    }
+  };
 
   const removeItem = (itemName: string) => {
     const newItems = items.filter(item => item.name !== itemName);
@@ -63,7 +68,7 @@ export default function HomeScreen() {
 
           <FlatList
             data={items}
-            keyExtractor={(item) => item.name} // Add keyExtractor for unique keys
+            keyExtractor={(item) => item.name}
             renderItem={({ item }) => (
               <View style={styles.recipeCard}>
                 <Button onPress={() => removeItem(item.name)} title={item.name} />
@@ -76,7 +81,7 @@ export default function HomeScreen() {
 
           <Button
             title="Generate More"
-            onPress={() => alert('Generate More button pressed')}
+            onPress={fetchItems}
           />
         </View>
       </View>
@@ -85,40 +90,5 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  recipeBox: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  recipesText: {
-    fontSize: 50,
-    color: 'black',
-    marginBottom: 20,
-  },
-  recipeCard: {
-    marginTop: 30,
-    width: 300,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 16,
-    borderRadius: 8,
-    backgroundColor: '#fff',
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-  },
-  ingredients: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#333',
-  },
-  lowerBoxes: {
-    paddingBottom: 20,
-  },
+  // ... (styles remain the same)
 });

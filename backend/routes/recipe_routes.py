@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-recipe_bp = Blueprint('recipe', __name__)
+recipe_bp = Blueprint('recipes', __name__)
 
 # 1. POST /recipe -> Get recipes based on user inventory
 # Body: user_id

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Modal, TextInput, Button, Alert } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Modal, TextInput, Button, Alert, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker'; // Import Picker for dropdown
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { useRouter } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker'; // For uploading image
+import Tesseract from 'tesseract.js'; // For OCR
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AddItemScreen() {
@@ -13,6 +15,38 @@ export default function AddItemScreen() {
   const [quantity, setQuantity] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [unitOfMeasurement, setUnitOfMeasurement] = useState('units'); // Default unit
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null); // For storing uploaded image
+  const [scannedText, setScannedText] = useState(''); // For storing scanned text from the image
+
+  // Handle image upload
+  const handleImageUpload = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: false,
+      quality: 1,
+    });
+
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      const uri = result.assets[0].uri;
+      setUploadedImage(uri);
+      scanImage(uri); // Process image using OCR
+    }
+  };
+
+  // Process the uploaded image using Tesseract
+  const scanImage = async (uri: string) => {
+    try {
+      const worker = await Tesseract.createWorker();
+      await worker.load();
+      await worker.reinitialize('eng');
+      const { data } = await worker.recognize(uri);
+      setScannedText(data.text); // Store scanned text
+      await worker.terminate();
+    } catch (error) {
+      console.error('Error scanning image:', error);
+      Alert.alert('Error', 'Something went wrong with image scanning.');
+    }
+  };
 
   const handleSubmit = async () => {
     if (!itemName || !quantity || !expiryDate || !unitOfMeasurement) {
@@ -70,17 +104,25 @@ export default function AddItemScreen() {
             onPress={() => setModalVisible(true)} // Open modal
           >
             <Ionicons name="pencil-outline" size={24} color="#FFFFFF" />
-            <Text style={styles.buttonText}>Manually Add Item</Text>
+            <Text style={styles.buttonText}>Add Item</Text>
           </TouchableOpacity>
 
-          {/* Button to take a picture */}
+          {/* Button to upload an image */}
           <TouchableOpacity
             style={styles.button}
-            onPress={() => router.push('/addItemPhoto')}
+            onPress={handleImageUpload}
           >
-            <Ionicons name="camera-outline" size={24} color="#FFFFFF" />
-            <Text style={styles.buttonText}>Take Picture</Text>
+            <Ionicons name="image-outline" size={24} color="#FFFFFF" />
+            <Text style={styles.buttonText}>Upload Picture</Text>
           </TouchableOpacity>
+
+          {/* Display uploaded image and scanned text */}
+          {uploadedImage && (
+            <>
+              <Image source={{ uri: uploadedImage }} style={styles.uploadedImage} />
+              <Text style={styles.scannedText}>Scanned Text: {scannedText}</Text>
+            </>
+          )}
         </View>
 
         {/* Modal for manual input */}
@@ -181,6 +223,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Roboto_700Bold',
     marginLeft: 8,
+  },
+  uploadedImage: {
+    marginTop: 20,
+    width: 300,
+    height: 200,
+    resizeMode: 'contain',
+  },
+  scannedText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: '#333',
   },
   headerImage: {
     width: '100%',
