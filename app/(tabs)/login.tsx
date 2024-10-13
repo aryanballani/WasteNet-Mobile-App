@@ -58,7 +58,7 @@ const LoginScreen = () => {
       <Button title="Login" onPress={handleLogin} />
       
       {/* Sign Up Button */}
-      <TouchableOpacity style={styles.signupButton} onPress={() => router.push('/addItem')}>
+      <TouchableOpacity style={styles.signupButton} onPress={() => router.push('/signup')}>
         <Text style={styles.signupText}>Don't have an account? Sign up!</Text>
       </TouchableOpacity>
     </View>

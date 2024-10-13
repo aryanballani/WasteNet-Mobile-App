@@ -1,4 +1,4 @@
-import { Image, StyleSheet, Platform, View, Text, FlatList, Button } from 'react-native';
+import { Image, StyleSheet, Platform, View, Text, FlatList, Button, TouchableOpacity } from 'react-native';
 import AppLoading from "expo-app-loading";
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -17,11 +17,13 @@ import AddItem from './addItem';
 
 const Stack = createNativeStackNavigator();
 
-
 import { NavigationProp } from '@react-navigation/native';
 import { ComponentType } from 'react';
+import { useRouter } from 'expo-router';
 
-function HomeScreen({ navigation }: { navigation: NavigationProp<any> }) {
+const router = useRouter();
+
+export default function HomeScreen({ navigation }: { navigation: NavigationProp<any> }) {
   let [fontsLoaded] = useFonts({
     Bangers_400Regular,
     Roboto_400Regular
@@ -38,9 +40,11 @@ function HomeScreen({ navigation }: { navigation: NavigationProp<any> }) {
           style={styles.reactLogo}
         />
       }>
+            <View>
+          <Text style={styles.topTitle}>Home</Text>
+        </View>
       <ThemedView>
         <View> 
-          <Text style={styles.title}>Name</Text>
           <View style={styles.topBar}>
           <Collapsible title="Menu">
           <FlatList
@@ -49,7 +53,12 @@ function HomeScreen({ navigation }: { navigation: NavigationProp<any> }) {
           {key: 'Add Item'},
           {key: 'Inventory'},
         ]}
-        renderItem={({item}: {item: {key: string}}) => <Text style={styles.list}>{item.key}</Text>}
+        renderItem={({item}: {item: {key: string}}) => 
+        <TouchableOpacity style={styles.signupButton} onPress={() => router.push('/addItem')}>
+        <Text style={styles.list}>{item.key}</Text>
+        </TouchableOpacity>
+        
+        }
       />
           </Collapsible>
           </View>
@@ -85,10 +94,10 @@ function HomeScreen({ navigation }: { navigation: NavigationProp<any> }) {
 
         <View style={styles.exp}>
           <Text style={styles.lower}>Got Groceries?</Text>
-          <Button
-        title="Add Item"
-        onPress={() => {navigation.navigate('Add Item')}}
-      />
+
+          <TouchableOpacity style={styles.signupButton} onPress={() => router.push('/addItem')}>
+        <Text style={styles.signupText}>Add Item</Text>
+      </TouchableOpacity>
         </View>
 
 
@@ -101,6 +110,9 @@ function HomeScreen({ navigation }: { navigation: NavigationProp<any> }) {
 }
 
 const styles = StyleSheet.create({
+  topTitle: {
+    fontSize: 50,
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -126,6 +138,8 @@ const styles = StyleSheet.create({
   },
   topBar: {
     position: "relative",
+    color: 'white',
+    backgroundColor: '#000000',
   },
   first: {
     marginTop: -10,
@@ -176,10 +190,18 @@ const styles = StyleSheet.create({
     fontSize: 20
   }, list: {
     fontSize: 18,
-  }
+  },
+  signupButton: {
+    marginTop: 20,
+    alignItems: 'center', // Center the text
+  },
+  signupText: {
+    color: 'blue', // Change to your preferred color
+    fontSize: 16,
+  },
 });
 
-export default function App() {
+ function App() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Waste Net" component={HomeScreen} />

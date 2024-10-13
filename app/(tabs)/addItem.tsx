@@ -18,7 +18,7 @@ import {
 import React, { useState } from 'react';
 
 export default function HomeScreen() {
-  const [image, setImage] = useState(null);
+
 
   const openCamera = () => {
     ImagePicker.launchCamera(
@@ -52,7 +52,6 @@ export default function HomeScreen() {
       }>
       <ThemedView>
         <View> 
-          <Text style={styles.title}>Name</Text>
           <View style={styles.topBar}>
           </View>
         </View>

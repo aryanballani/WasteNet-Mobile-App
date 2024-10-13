@@ -18,7 +18,7 @@ import {
 import React, { useState } from 'react';
 
 export default function HomeScreen() {
-    let data = [
+    let collections = [
         {key: 'Devin'},
         {key: 'Dan'},
         {key: 'Dominic'},
@@ -31,7 +31,6 @@ export default function HomeScreen() {
   });
 
   if (!fontsLoaded) return <AppLoading/>
-  const [showComponent, setShowComponent] = useState(false);
   let i = 0;
 
   return (
@@ -45,7 +44,6 @@ export default function HomeScreen() {
       }>
       <ThemedView>
         <View> 
-          <Text style={styles.title}>Name</Text>
           <View style={styles.topBar}>
           </View>
         </View>
@@ -59,12 +57,7 @@ export default function HomeScreen() {
         <Text>(Check to remove item)</Text>
       <View style={styles.lowerBoxes}>
           <FlatList
-        data={[
-          {key: 'Devin'},
-          {key: 'Dan'},
-          {key: 'Dominic'},
-          {key: 'Jackson'},
-        ]}
+        data={collections}
         renderItem={({item}: {item: {key: string}}) => 
             <View style={styles.remove}>
                 <Button 
