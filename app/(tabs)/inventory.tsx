@@ -5,23 +5,35 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Collapsible } from '@/components/Collapsible';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Camera from 'react-native-camera';
+import ImagePicker from 'react-native-image-picker';
+
+
 import {
   useFonts,
   Roboto_400Regular,
   Bangers_400Regular,
   OpenSans_400Regular
 } from "@expo-google-fonts/dev";
-import { NavigationContainer, ParamListBase, RouteProp } from '@react-navigation/native';
-import AddItem from './addItem';
+import React, { useState } from 'react';
 
-const Stack = createNativeStackNavigator();
+export default function HomeScreen() {
+  const [image, setImage] = useState(null);
 
+  const openCamera = () => {
+    ImagePicker.launchCamera(
+      {
+        mediaType: 'photo',
+        includeBase64: false,
+        maxHeight: 200,
+        maxWidth: 200,
+      },
+      (response) => {
+       
+      }
+    );
+}
 
-import { NavigationProp } from '@react-navigation/native';
-import { ComponentType } from 'react';
-
-function HomeScreen({ navigation }: { navigation: NavigationProp<any> }) {
   let [fontsLoaded] = useFonts({
     Bangers_400Regular,
     Roboto_400Regular
@@ -42,16 +54,6 @@ function HomeScreen({ navigation }: { navigation: NavigationProp<any> }) {
         <View> 
           <Text style={styles.title}>Name</Text>
           <View style={styles.topBar}>
-          <Collapsible title="Menu">
-          <FlatList
-        data={[
-          {key: 'Recipe'},
-          {key: 'Add Item'},
-          {key: 'Inventory'},
-        ]}
-        renderItem={({item}: {item: {key: string}}) => <Text style={styles.list}>{item.key}</Text>}
-      />
-          </Collapsible>
           </View>
         </View>
       </ThemedView>
@@ -59,39 +61,11 @@ function HomeScreen({ navigation }: { navigation: NavigationProp<any> }) {
         
         <View style={styles.recipeBox}>
         <View id='recipes-box' style={styles.topRecipes}>
-          <Text style={styles.recipesText}>Top Recipes</Text>
-          <FlatList
-        data={[
-          {key: 'Devin'},
-          {key: 'Dan'},
-          {key: 'Dominic'},
-        ]}
-        renderItem={({item}: {item: {key: string}}) => <Text style={styles.list}>{item.key}</Text>}
-      />
+          <Text style={styles.recipesText}>Inventory</Text>
         </View>
       <View style={styles.lowerBoxes}>
-      <View style={styles.exp}>
-          <Text style={styles.lower}>Upcoming Exp.</Text>
-          <FlatList
-        data={[
-          {key: 'Devin'},
-          {key: 'Dan'},
-          {key: 'Dominic'},
-          {key: 'Jackson'},
-        ]}
-        renderItem={({item}: {item: {key: string}}) => <Text style={styles.list}>{item.key}</Text>}
-        />
-        </View>
-
-        <View style={styles.exp}>
-          <Text style={styles.lower}>Got Groceries?</Text>
-          <Button
-        title="Add Item"
-        onPress={() => {navigation.navigate('AddItem')}}
-      />
-        </View>
-
-
+          <Text>(Check to remove item)</Text>
+          
       </View>
         </View>
         
@@ -146,11 +120,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: 'white',
     width: 320,
-    borderStyle: "solid",
-    borderWidth: 3,
   }, 
   recipesText: {
-    fontSize: 30,
+    fontSize: 50,
     color: "black"
   },
   exp: {
@@ -178,12 +150,3 @@ const styles = StyleSheet.create({
     fontSize: 18,
   }
 });
-
-export default function App() {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Waste Net" component={HomeScreen} />
-      <Stack.Screen name="AddItem" component={AddItem} />
-    </Stack.Navigator>
-  );
-}

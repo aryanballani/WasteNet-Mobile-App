@@ -33,18 +33,18 @@ export default function TabLayout() {
             }}
           />
           <Tabs.Screen
-            name="m"
+            name="login" // Change this to lowercase
             options={{
-              title: 'Menu',
+              title: 'Login',
               tabBarIcon: ({ color, focused }) => (
                 <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
               ),
             }}
           />
           <Tabs.Screen
-            name="login" // Change this to lowercase
+            name="addItem" // Change this to lowercase
             options={{
-              title: 'Login',
+              title: 'Add Item',
               tabBarIcon: ({ color, focused }) => (
                 <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
               ),
