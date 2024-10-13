@@ -60,6 +60,24 @@ export default function TabLayout() {
             ),
           }}
         />
+        <Tabs.Screen
+          name="inventory"
+          options={{
+            title: 'Inventory',
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? 'add-circle' : 'add-circle-outline'} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="recipes"
+          options={{
+            title: 'Recipes',
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? 'add-circle' : 'add-circle-outline'} color={color} />
+            ),
+          }}
+        />
       </Tabs>
     </View>
   );

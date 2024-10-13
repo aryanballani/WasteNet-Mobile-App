@@ -18,22 +18,18 @@ import React, { useState } from 'react';
 
 export default function HomeScreen() {
     const [items, setItem] = useState([
-        {name: 'Devin',
+        {name: 'Eggs and spam',
          quantity: 1,
          expiration: '10/10/2021'
         },
-        {name: 'Dan',
+        {name: 'Rice seaweed',
          quantity: 2,
          expiration: '10/10/2021'
         },
         {name: 'Dominic',
          quantity: 9,
          expiration: '10/10/2021'
-        },
-        {name: 'Jackson',
-         expiration: '10/10/2021',
-         quantity: 1
-        },
+        }
       ])
 
   let [fontsLoaded] = useFonts({
