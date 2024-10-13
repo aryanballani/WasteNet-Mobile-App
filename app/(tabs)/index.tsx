@@ -1,11 +1,25 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
+import { Image, StyleSheet, Platform, View, Text, FlatList, Button } from 'react-native';
+import AppLoading from "expo-app-loading";
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { Collapsible } from '@/components/Collapsible';
+import {
+  useFonts,
+  Roboto_400Regular,
+  Bangers_400Regular,
+  OpenSans_400Regular
+} from "@expo-google-fonts/dev";
 
 export default function HomeScreen() {
+  let [fontsLoaded] = useFonts({
+    Bangers_400Regular,
+    Roboto_400Regular
+  });
+
+  if (!fontsLoaded) return <AppLoading/>
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -15,32 +29,64 @@ export default function HomeScreen() {
           style={styles.reactLogo}
         />
       }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">DUBHACKS!</ThemedText>
-        <HelloWave />
+      <ThemedView>
+        <View> 
+          <Text style={styles.title}>Name</Text>
+          <View style={styles.topBar}>
+          <Collapsible title="Menu">
+          <FlatList
+        data={[
+          {key: 'Recipe'},
+          {key: 'Add Item'},
+          {key: 'Inventory'},
+        ]}
+        renderItem={({item}: {item: {key: string}}) => <Text style={styles.list}>{item.key}</Text>}
+      />
+          </Collapsible>
+          </View>
+        </View>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-     
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
+      <View>
+        
+        <View style={styles.recipeBox}>
+        <View id='recipes-box' style={styles.topRecipes}>
+          <Text style={styles.recipesText}>Top Recipes</Text>
+          <FlatList
+        data={[
+          {key: 'Devin'},
+          {key: 'Dan'},
+          {key: 'Dominic'},
+        ]}
+        renderItem={({item}: {item: {key: string}}) => <Text style={styles.list}>{item.key}</Text>}
+      />
+        </View>
+      <View style={styles.lowerBoxes}>
+      <View style={styles.exp}>
+          <Text style={styles.lower}>Upcoming Exp.</Text>
+          <FlatList
+        data={[
+          {key: 'Devin'},
+          {key: 'Dan'},
+          {key: 'Dominic'},
+          {key: 'Jackson'},
+        ]}
+        renderItem={({item}: {item: {key: string}}) => <Text style={styles.list}>{item.key}</Text>}
+        />
+        </View>
+
+        <View style={styles.exp}>
+          <Text style={styles.lower}>Got Groceries?</Text>
+          <Button
+        title="Add Item"
+        onPress={() => alert('Simple Button pressed')}
+      />
+        </View>
+
+
+      </View>
+        </View>
+        
+      </View>
     </ParallaxScrollView>
   );
 }
@@ -49,17 +95,77 @@ const styles = StyleSheet.create({
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 4,
   },
   stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+    gap: 4,
+    marginBottom: 4,
   },
   reactLogo: {
-    height: 178,
-    width: 290,
+    height: 1,
+    width:1,
     bottom: 0,
     left: 0,
     position: 'absolute',
   },
+  title: {
+    textAlign: 'right',
+    marginTop: 20,
+    position: 'relative',
+    fontSize: 30,
+    fontFamily: "Roboto_400Regular"
+  },
+  topBar: {
+    position: "relative",
+  },
+  first: {
+    marginTop: -10,
+  },
+  menu: {
+    fontSize: 30
+  },
+  recipeBox: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  topRecipes: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 30,
+    marginTop: 20,
+    backgroundColor: 'white',
+    width: 320,
+    borderStyle: "solid",
+    borderWidth: 3,
+  }, 
+  recipesText: {
+    fontSize: 30,
+    color: "black"
+  },
+  exp: {
+    fontSize: 30,
+    marginTop: 40,
+    marginLeft: 20,
+    marginRight: 20,
+    backgroundColor: 'white',
+    width: 130,
+    borderWidth: 3,
+    padding: 5,
+  }, 
+  recipeText: {
+    fontSize: 30,
+    color: "black"
+  },
+  lowerBoxes: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: 'space-between'
+  },
+  lower: {
+    fontSize: 20
+  }, list: {
+    fontSize: 18,
+  }
 });

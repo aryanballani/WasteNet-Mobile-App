@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, Image, Platform, View } from 'react-native';
+import { StyleSheet, Image, Platform, View, Text, FlatList } from 'react-native';
 import "../../assets/styles/styles.css"
 
 import { Collapsible } from '@/components/Collapsible';
@@ -13,7 +13,7 @@ export default function TabTwoScreen() {
     <View>
       <ThemedView>
         <View> 
-          <h2 id="title">Name</h2>
+          <Text>Name</Text>
           <View style={styles.topBar}>
           <Collapsible title="">
           <ul id='nav'>
@@ -29,29 +29,45 @@ export default function TabTwoScreen() {
         
         <View style={styles.recipeBox}>
         <View id='recipes-box' style={styles.topRecipes}>
-          <h1>Top Recipes</h1>
-      <ul id='recipes-list'>
-      <li className="recipe">new</li>
-      <li className="recipe">hi</li>
-      <li className="recipe">1</li>
-
-      </ul>
+          <Text>Top Recipes</Text>
+          <FlatList
+        data={[
+          {key: 'Devin'},
+          {key: 'Dan'},
+          {key: 'Dominic'},
+          {key: 'Jackson'},
+          {key: 'James'},
+          {key: 'Joel'},
+          {key: 'John'},
+          {key: 'Jillian'},
+          {key: 'Jimmy'},
+          {key: 'Julie'},
+        ]}
+        renderItem={({item}: {item: {key: string}}) => <Text>{item.key}</Text>}
+      />
         </View>
-      <div id="lower-boxes">
+      <View id="lower-boxes">
       <View id='exp-box' style={styles.exp}>
-          <h1 className='lower'>Upcoming Exp.</h1>
-      <ul id='exp-list'>
-      <li className="recipe">new</li>
-      </ul>
+          <Text>Upcoming Exp.</Text>
+          <FlatList
+        data={[
+          {key: 'Devin'},
+          {key: 'Dan'},
+          {key: 'Dominic'},
+          {key: 'Jackson'},
+          {key: 'James'},
+          {key: 'Joel'},
+          {key: 'John'},
+          {key: 'Jillian'},
+          {key: 'Jimmy'},
+          {key: 'Julie'},
+        ]}
+        renderItem={({item}: {item: {key: string}}) => <Text>{item.key}</Text>}
+        />
         </View>
 
-        <View id='grocery-box' style={styles.exp}>
-          <h1 className='lower'>Got Groceries?</h1>
-      <div className="flex">
-      <button id="menu-add">Add Item</button>
-      </div>
-        </View>
-      </div>
+
+      </View>
         </View>
         
       </View>
