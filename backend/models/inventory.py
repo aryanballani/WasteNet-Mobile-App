@@ -2,12 +2,16 @@ import pymongo           # type: ignore
 import os
 from pymongo import ReturnDocument      # type: ignore
 from datetime import datetime
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class Inventory:
 
     def __init__(self):
         # STEP 1 : Connect to your MongoDB server
         conn_str = os.getenv('MONGODB_CONNECTION_STRING')
+        print(conn_str)
         try:
             client = pymongo.MongoClient(conn_str)
             print("Connected to MongoDB successfully")
