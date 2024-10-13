@@ -18,21 +18,12 @@ import {
 import React, { useState } from 'react';
 
 export default function HomeScreen() {
-  const [image, setImage] = useState(null);
-
-  const openCamera = () => {
-    ImagePicker.launchCamera(
-      {
-        mediaType: 'photo',
-        includeBase64: false,
-        maxHeight: 200,
-        maxWidth: 200,
-      },
-      (response) => {
-       
-      }
-    );
-}
+    let data = [
+        {key: 'Devin'},
+        {key: 'Dan'},
+        {key: 'Dominic'},
+        {key: 'Jackson'},
+      ]
 
   let [fontsLoaded] = useFonts({
     Bangers_400Regular,
@@ -40,6 +31,8 @@ export default function HomeScreen() {
   });
 
   if (!fontsLoaded) return <AppLoading/>
+  const [showComponent, setShowComponent] = useState(false);
+  let i = 0;
 
   return (
     <ParallaxScrollView
@@ -63,9 +56,22 @@ export default function HomeScreen() {
         <View id='recipes-box' style={styles.topRecipes}>
           <Text style={styles.recipesText}>Inventory</Text>
         </View>
+        <Text>(Check to remove item)</Text>
       <View style={styles.lowerBoxes}>
-          <Text>(Check to remove item)</Text>
-          
+          <FlatList
+        data={[
+          {key: 'Devin'},
+          {key: 'Dan'},
+          {key: 'Dominic'},
+          {key: 'Jackson'},
+        ]}
+        renderItem={({item}: {item: {key: string}}) => 
+            <View style={styles.remove}>
+                <Button 
+        title={item.key}
+      />
+            </View>}
+        />
       </View>
         </View>
         
@@ -83,6 +89,9 @@ const styles = StyleSheet.create({
   stepContainer: {
     gap: 4,
     marginBottom: 4,
+  },
+  remove: {
+    marginRight: 160
   },
   reactLogo: {
     height: 1,
@@ -140,6 +149,8 @@ const styles = StyleSheet.create({
     color: "black"
   },
   lowerBoxes: {
+    marginTop: 10,
+    marginLeft: 70,
     flex: 1,
     flexDirection: "row",
     justifyContent: 'space-between'

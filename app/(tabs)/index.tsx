@@ -87,7 +87,7 @@ function HomeScreen({ navigation }: { navigation: NavigationProp<any> }) {
           <Text style={styles.lower}>Got Groceries?</Text>
           <Button
         title="Add Item"
-        onPress={() => {navigation.navigate('AddItem')}}
+        onPress={() => {navigation.navigate('Add Item')}}
       />
         </View>
 
@@ -183,7 +183,7 @@ export default function App() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Waste Net" component={HomeScreen} />
-      <Stack.Screen name="AddItem" component={AddItem} />
+      <Stack.Screen name="Add Item" component={AddItem} />
     </Stack.Navigator>
   );
 }
