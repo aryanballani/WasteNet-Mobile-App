@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import { useState, useRef } from 'react';
@@ -47,8 +48,8 @@ export default function App() {
             <Text style={styles.message}>Photo taken!</Text>
             <Button onPress={() => setPhotoUri(null)} title="Take another photo" />
             <Button onPress={() => {
-                localStorage.setItem("image", photoUri);
-                router.push('/addItem')
+                AsyncStorage.setItem('photoUri', photoUri);
+                router.push('/addItem');
             }} title="Confirm Photo" />
             <Image source={{ uri: photoUri }} style={styles.preview} />
         </View>

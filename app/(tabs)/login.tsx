@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router'; // For navigation
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -10,7 +10,9 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     console.log('logged in');
+    console.log(10);
     if (!username || !password) {
+      console.log(1)
       Alert.alert('Error', 'Please enter both username and password');
       setUsername('');
       setPassword('');
@@ -19,13 +21,14 @@ const LoginScreen = () => {
 
     // Here you would typically make an API call to authenticate the user
     try {
-      const response = await fetch('http://127.0.0.1:5000/users/login', {
+      const response = await fetch('http://192.168.137.183:5001/users/login', {
         method: 'POST', // Use POST for real-world applications
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, password }),
       });
+      console.log(1);
 
       if (!response.ok) {
         Alert.alert('Login Failed', 'Invalid username or password');
@@ -33,17 +36,19 @@ const LoginScreen = () => {
         setPassword('');
         throw new Error('Invalid credentials');
       }
-
+      console.log(2);
       const data = await response.json();
       console.log(data);
       // Alert.alert('Success', `Welcome, ${data.username}!`);
       // localStorage.setItem('user', JSON.stringify(data.token));
       AsyncStorage.setItem('user', JSON.stringify(data.token))
       // Redirect or navigate to another screen on successful login
+      console.log(3);
       router.push('/home'); // Change '/home' to your home screen route
 
     } catch (error) {
       if (error instanceof Error) {
+        console.log(error);
         Alert.alert('Login Failed', error.message);
       } else {
         Alert.alert('Login Failed', 'Something went wrong');

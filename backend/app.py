@@ -18,4 +18,5 @@ app.register_blueprint(recipe_bp, url_prefix='/recipes')
 app.register_blueprint(user_bp, url_prefix='/users')
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5001)  # Ensure this is set
+

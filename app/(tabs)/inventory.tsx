@@ -25,7 +25,7 @@ export default function HomeScreen() {
       try {
         const userId = await AsyncStorage.getItem('user');
         if (userId) {
-          const response = await fetch(`http://127.0.0.1:5000/inventory/user/${JSON.parse(userId)}`);
+          const response = await fetch(`http://192.168.137.183:5001/inventory/user/${JSON.parse(userId)}`);
           const data = await response.json();
           setItems(data.data);  // Assuming 'data' contains an array of inventory items
         }

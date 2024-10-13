@@ -34,10 +34,11 @@ export default function HomeScreen() {
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log("waiting for data");
       try {
         const userId = await AsyncStorage.getItem('user');
         if (userId) {
-          const response = await fetch(`http://127.0.0.1:5000/inventory/user/${JSON.parse(userId)}`);
+          const response = await fetch(`http://192.168.137.183:5001/inventory/user/${JSON.parse(userId)}`);
           if (response.ok) {
             const data = await response.json();
             setTopInventory(data.data);
@@ -48,7 +49,7 @@ export default function HomeScreen() {
           }
         }
       } catch (error) {
-        console.error('Error fetching inventory:', error);
+        console.error('Error fetching inventory:', error.stack);
       } finally {
         setIsLoading(false);
       }
