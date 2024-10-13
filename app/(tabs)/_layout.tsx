@@ -37,16 +37,16 @@ export default function TabLayout() {
           <Text style={styles.sidebarTitle}>WasteNet</Text>
           <Pressable onPress={() => {
             toggleSidebar();
-            router.push("/");
+            router.push("/home");
           }}>
             <Text style={styles.sidebarItem}>Home</Text>
           </Pressable>
-          <Pressable onPress={() => {
+          {/* <Pressable onPress={() => {
             toggleSidebar();
             router.push("/login");
           }}>
             <Text style={styles.sidebarItem}>Login</Text>
-          </Pressable>
+          </Pressable> */}
           <Pressable onPress={() => {
             toggleSidebar();
             router.push("/addItem");
@@ -65,12 +65,12 @@ export default function TabLayout() {
           }}>
             <Text style={styles.sidebarItem}>Inventory</Text>
           </Pressable>
-          <Pressable onPress={() => {
+          {/* <Pressable onPress={() => {
             toggleSidebar();
             router.push('/signup');
           }}>
             <Text style={styles.sidebarItem}>Sign Up</Text>
-          </Pressable>
+          </Pressable> */}
           <Pressable onPress={toggleSidebar} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>Close</Text>
           </Pressable>
