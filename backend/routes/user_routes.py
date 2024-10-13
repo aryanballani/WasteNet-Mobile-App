@@ -1,16 +1,15 @@
 from flask import Blueprint, request, jsonify
-import jwt
 import os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv  # Import load_dotenv to read .env variables
-from models.user import User  # Assuming you have a User model
+from models.users import Users  # Assuming you have a User model
 
 # Load environment variables from .env file
 load_dotenv()
 
 user_bp = Blueprint('user', __name__)
 
-user_model = User()
+user_model = Users()
 SECRET_KEY = os.getenv('SECRET_KEY')  # Get the secret key from environment variables
 
 # 1. POST /user/login -> Login and authenticate user
