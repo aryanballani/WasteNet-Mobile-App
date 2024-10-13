@@ -1,6 +1,7 @@
 from flask import Flask
 from routes.inventory_routes import inventory_bp
 from routes.recipe_routes import recipe_bp
+from routes.user_routes import user_bp
 
 app = Flask(__name__)
 
