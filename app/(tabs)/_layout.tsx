@@ -55,6 +55,12 @@ export default function TabLayout() {
           </Pressable>
           <Pressable onPress={() => {
             toggleSidebar();
+            router.push('/recipes');
+          }}>
+            <Text style={styles.sidebarItem}>Recipes</Text>
+          </Pressable>
+          <Pressable onPress={() => {
+            toggleSidebar();
             router.push('/inventory');
           }}>
             <Text style={styles.sidebarItem}>Inventory</Text>

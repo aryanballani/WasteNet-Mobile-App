@@ -19,16 +19,16 @@ import React, { useState } from 'react';
 export default function HomeScreen() {
     const [items, setItem] = useState([
         {name: 'Eggs and spam',
-         quantity: 1,
-         expiration: '10/10/2021'
+         ingredients: "Eggs, spam",
+         recipe: '10/10/2021'
         },
         {name: 'Rice seaweed',
-         quantity: 2,
-         expiration: '10/10/2021'
+         ingredients: "Rice, seaweed",
+         recipe: '10/10/2021'
         },
         {name: 'Dominic',
-         quantity: 9,
-         expiration: '10/10/2021'
+         ingredients: "Rice, seaweed",
+         recipe: '10/10/2021'
         }
       ])
 
@@ -63,20 +63,21 @@ export default function HomeScreen() {
         
         <View style={styles.recipeBox}>
         <View id='recipes-box' style={styles.topRecipes}>
-          <Text style={styles.recipesText}>Inventory</Text>
+          <Text style={styles.recipesText}>Recipes</Text>
         </View>
-        <Text>(Check to remove item)</Text>
       <View style={styles.lowerBoxes}>
           <FlatList
         data={items}
-        renderItem={({item}: {item: {name: string, quantity: number, expiration: string}}) => 
-            <View style={styles.remove}>
-                <Button 
+        renderItem={({item}: {item: {name: string, ingredients: string, recipe: string}}) => 
+            <View style={styles.recipes}>
+                <Button
                 onPress={() => {
                     removeItem(item.name);
                 }}
-        title={item.name + " (Q:" + item.quantity + ", Exp:" + item.expiration + ")"}
+        title={item.name}
       />
+      <Text style={styles.ingredients}>Ingredients: {item.ingredients}</Text>
+      <Text style={styles.ingredients}>Recipe: {item.recipe}</Text>
             </View>}
         />
       </View>
@@ -88,6 +89,9 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  ingredients: {
+    marginLeft: 10,
+  },
   titleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -97,9 +101,10 @@ const styles = StyleSheet.create({
     gap: 4,
     marginBottom: 4,
   },
-  remove: {
-    marginRight: 200,
-    width: 200,
+  recipes: {
+    width: 270,
+    borderWidth: 3,
+    height: 200,
   },
   reactLogo: {
     height: 1,
@@ -157,8 +162,8 @@ const styles = StyleSheet.create({
     color: "black"
   },
   lowerBoxes: {
+    marginLeft: 30,
     marginTop: 10,
-    marginLeft: 70,
     flex: 1,
     flexDirection: "row",
     justifyContent: 'space-between'
