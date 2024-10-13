@@ -1,22 +1,26 @@
 import { Image, StyleSheet, View, Text, Button } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import Camera from 'react-native-camera';
-import ImagePicker from 'react-native-image-picker';
-export default function HomeScreen() {
+import React, { useState, useEffect } from 'react';
+import { Camera, CameraView, CameraType, useCameraPermissions } from 'expo-camera';
+import * as MediaLibrary from 'expo-media-library';
 
-  const openCamera = () => {
-    ImagePicker.launchCamera(
-      {
-        mediaType: 'photo',
-        includeBase64: false,
-        maxHeight: 200,
-        maxWidth: 200,
-      },
-      (response) => {
-       
-      }
+export default function HomeScreen() {
+  const [permission, requestPermission] = useCameraPermissions();
+  const [cameraRef, setCameraRef] = useState<CameraView | null>(null);
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
+
+  if (permission === null) { return [];}
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet.
+    return (
+      <View>
+        <Text>We need your permission to show the camera</Text>
+        <Button onPress={requestPermission} title="grant permission" />
+      </View>
     );
-}
+  }
+  let file: string = "";
 
   return (
     <ParallaxScrollView
@@ -28,18 +32,32 @@ export default function HomeScreen() {
         <View id='recipes-box' style={styles.topRecipes}>
           <Text style={styles.recipesText}>Add Item</Text>
         </View>
-      <View>
-          <Button
-        title="Scan Item"
-        onPress={() => openCamera}
-        />
+      <View>  
+
         <Button
+        
         title="Manually Add Item"
         onPress={() => alert('Simple Button pressed')}
         />
+        <CameraView ref={(ref: CameraView | null) => setCameraRef(ref)}>
+        <Button
+            title="Take Picture"
+            onPress={async () => {
+              if (cameraRef) {
+                const photo = await cameraRef.takePictureAsync();
+                if (photo === undefined) throw new Error('No photo taken');
+                //THIS IS THE DATA TYPE for the photo
+                //It's a react state, so use photoUri to reference
+                setPhotoUri(photo.uri)
+              }
+            }}
+          />
+        </CameraView>
       </View>
         </View>
-        
+        {photoUri !== null ? <Image
+        source={{uri: photoUri}}
+        /> : ""}
       </View>
     </ParallaxScrollView>
   );
