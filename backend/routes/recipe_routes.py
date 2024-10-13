@@ -10,7 +10,7 @@ recipe_bp = Blueprint('recipe', __name__)
 
 # 1. POST /recipe -> Get recipes based on user inventory
 # Body: user_id
-@recipe_bp.route('', methods=['POST'])
+@recipe_bp.route('/', methods=['POST'])
 def suggest_recipes():
     aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
     aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')

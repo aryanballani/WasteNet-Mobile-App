@@ -17,7 +17,7 @@ const SignupScreen = () => {
 
     // Here you would typically make an API call to create a new user
     try {
-      const response = await fetch('http://192.168.137.183:5001/users/create', {
+      const response = await fetch('http://178.0.0.1:5001/users/create', {
         method: 'POST', // Use POST for creating a new user
         headers: {
           'Content-Type': 'application/json',

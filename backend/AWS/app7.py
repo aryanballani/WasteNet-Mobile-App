@@ -5,16 +5,16 @@ from PIL import Image
 import pytesseract
 
 # If you are on Windows, specify the path to the Tesseract executable
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-# Open an image file
-img = Image.open('veggie-grocery-receipt_orig.jpeg')
+# # Open an image file
+# img = Image.open('veggie-grocery-receipt_orig.jpeg')
 
-# Use pytesseract to extract text
-text = pytesseract.image_to_string(img)
+# # Use pytesseract to extract text
+# text = pytesseract.image_to_string(img)
 
-# Print the extracted text
-print(text)
+# # Print the extracted text
+# print(text)
 
 
 
@@ -116,7 +116,7 @@ def main():
 }"""}]
 
     # Define the user message directly as a variable
-    user_text = text
+    user_text = {"text" : "hiiiii"}
 
     # Create a message using the provided user input
     message_1 = {

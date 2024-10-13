@@ -160,6 +160,11 @@ def get_gen_ai_reponse(json_input, bedrock_client):
         output_message = response['output']['message']
         output_message = jsonify(output_message["content"][0]["text"])
         store_results_in_dynamodb(result_id, json_input, output_message)
+        for message in messages:
+            print(f"Role: {message['role']}")
+            for content in message['content']:
+                print(f"Text: {content['text']}")
+            print()
         
         return output_message, 200
         # Continue the conversation with the 2nd message.
@@ -171,11 +176,7 @@ def get_gen_ai_reponse(json_input, bedrock_client):
         # messages.append(output_message)
 
         # Show the complete conversation.
-        # for message in messages:
-        #     print(f"Role: {message['role']}")
-        #     for content in message['content']:
-        #         print(f"Text: {content['text']}")
-        #     print()
+       
 
     except ClientError as err:
         message = err.response['Error']['Message']
