@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, Platform, StatusBar } from 'react-native';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -9,72 +9,85 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      {/* Header Bar */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>My App Name</Text>
-      </View>
-
+    <View style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        {/* Header Bar */}
+        <View style={styles.header}>
+          <Text style={styles.headerText}>My App Name</Text>
+        </View>
+      </SafeAreaView>
       {/* Tabs */}
-      <View style={styles.tabsContainer}>
-        <Tabs
-          screenOptions={{
-            tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-            headerShown: false,
+      <Tabs
+        screenOptions={{
+          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+          headerShown: false,
+          tabBarStyle: styles.tabBar,
+        }}
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            title: 'Home',
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            ),
           }}
-        >
-          <Tabs.Screen
-            name="index" // Assuming this is your Home screen
-            options={{
-              title: 'Home',
-              tabBarIcon: ({ color, focused }) => (
-                <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
-              ),
-            }}
-          />
-          <Tabs.Screen
-            name="login" // Change this to lowercase
-            options={{
-              title: 'Login',
-              tabBarIcon: ({ color, focused }) => (
-                <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-              ),
-            }}
-          />
-          <Tabs.Screen
-            name="addItem" // Change this to lowercase
-            options={{
-              title: 'Add Item',
-              tabBarIcon: ({ color, focused }) => (
-                <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
-              ),
-            }}
-          />
-        </Tabs>
-      </View>
-    </SafeAreaView>
+        />
+        <Tabs.Screen
+          name="login"
+          options={{
+            title: 'Login',
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? 'log-in' : 'log-in-outline'} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="add-item"
+          options={{
+            title: 'Add Item',
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? 'add-circle' : 'add-circle-outline'} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="signup"
+          options={{
+            title: 'Sign Up',
+            tabBarIcon: ({ color, focused }) => (
+              <TabBarIcon name={focused ? 'add-circle' : 'add-circle-outline'} color={color} />
+            ),
+          }}
+        />
+      </Tabs>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+  },
+  safeArea: {
+    backgroundColor: 'black',
+  },
   header: {
-    backgroundColor: 'black', // Header background color
-    width: '100%', // Stretch across the width of the screen
-    paddingVertical: 15, // You can adjust this if needed
-    alignItems: 'flex-end', // Align text to the right
+    width: '100%',
+    paddingVertical: 15,
+    alignItems: 'flex-end',
     justifyContent: 'center',
-    position: 'absolute', // Ensure the header stays at the top
-    top: 0, // Position at the top of the screen
-    zIndex: 1, // Ensure the header appears above other components
   },
   headerText: {
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
-    paddingRight: 20, // Optional padding for right alignment
+    paddingRight: 20,
   },
-  tabsContainer: {
-    marginTop: 70, // Adjust this based on the height of your header
-    flex: 1, // Allow tabs to take the remaining space
+  tabBar: {
+    backgroundColor: 'white',
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
   },
 });

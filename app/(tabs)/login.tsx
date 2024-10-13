@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import { useRouter } from 'expo-router'; // For navigation (if using expo-router)
+import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router'; // For navigation
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
@@ -9,13 +9,12 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     console.log('logged in');
-    // Uncomment and implement the login logic here
-
     // if (!username || !password) {
     //   Alert.alert('Error', 'Please enter both username and password');
     //   return;
     // }
 
+    // // Here you would typically make an API call to authenticate the user
     // try {
     //   const response = await fetch('https://your-api-url/user/login', {
     //     method: 'GET', // Use POST for real-world applications
@@ -42,7 +41,6 @@ const LoginScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* Login Form */}
       <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
@@ -58,6 +56,11 @@ const LoginScreen = () => {
         secureTextEntry
       />
       <Button title="Login" onPress={handleLogin} />
+      
+      {/* Sign Up Button */}
+      <TouchableOpacity style={styles.signupButton} onPress={() => router.push('/addItem')}>
+        <Text style={styles.signupText}>Don't have an account? Sign up!</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -81,6 +84,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     paddingHorizontal: 10,
     marginBottom: 20,
+  },
+  signupButton: {
+    marginTop: 20,
+    alignItems: 'center', // Center the text
+  },
+  signupText: {
+    color: 'blue', // Change to your preferred color
+    fontSize: 16,
   },
 });
 
