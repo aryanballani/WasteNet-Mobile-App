@@ -60,6 +60,15 @@ class Inventory:
             items.append(doc)
         return items
     
+    def get_items_by_user(self, user_id):
+        docs = self.collection.find({'user_id': user_id})
+        # Convert ObjectId to string and return the list of items
+        items = []
+        for doc in docs:
+            doc['_id'] = str(doc['_id'])  # Convert ObjectId to string
+            items.append(doc)
+        return items
+    
 
     def get_items(self):
         docs = self.collection.find()

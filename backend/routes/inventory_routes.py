@@ -16,8 +16,8 @@ def get_inventory():
     return jsonify({"status": "success", "data": items}), 200
 
 
-# 2. GET /user/<int:user_id> -> get items by user ID
-@inventory_bp.route('/user/<int:user_id>', methods=['GET'])
+# 2. GET /user/<user_id> -> get items by user ID
+@inventory_bp.route('/user/<user_id>', methods=['GET'])
 def get_items_by_user(user_id):
     if not user_model.is_userid_taken(user_id):
         return jsonify({"status": "error", "message": "Invalid user ID"}), 422
