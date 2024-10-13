@@ -1,77 +1,61 @@
 import { Image, StyleSheet, View, Text, Button } from 'react-native';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 import React, { useState, useEffect } from 'react';
-import { Camera, CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import * as MediaLibrary from 'expo-media-library';
+import { CameraView, Camera, CameraType, useCameraPermissions } from 'expo-camera'; // Correctly import Camera
+import ParallaxScrollView from '@/components/ParallaxScrollView'; // Assuming this is your custom component
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
-  const [permission, requestPermission] = useCameraPermissions();
-  const [cameraRef, setCameraRef] = useState<CameraView | null>(null);
-  const [photoUri, setPhotoUri] = useState<string | null>(null);
-
-  if (permission === null) { return [];}
-
-  if (!permission.granted) {
-    // Camera permissions are not granted yet.
-    return (
-      <View>
-        <Text>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
-      </View>
-    );
-  }
-  let file: string = "";
+  const router = useRouter();
 
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={<Image/>}>
-      <View>
+      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }} headerImage={<View style={styles.headerImage} />}>
+      <View style={styles.container}>
         
         <View style={styles.recipeBox}>
-        <View id='recipes-box' style={styles.topRecipes}>
-          <Text style={styles.recipesText}>Add Item</Text>
-        </View>
-      <View>  
+          <View id="recipes-box" style={styles.topRecipes}>
+            <Text style={styles.recipesText}>Add Item</Text>
+          </View>
 
-        <Button
-        
-        title="Manually Add Item"
-        onPress={() => alert('Simple Button pressed')}
-        />
-        <CameraView ref={(ref: CameraView | null) => setCameraRef(ref)}>
-        <Button
-            title="Take Picture"
-            onPress={async () => {
-              if (cameraRef) {
-                const photo = await cameraRef.takePictureAsync();
-                if (photo === undefined) throw new Error('No photo taken');
-                //THIS IS THE DATA TYPE for the photo
-                //It's a react state, so use photoUri to reference
-                setPhotoUri(photo.uri)
-              }
-            }}
-          />
-        </CameraView>
-      </View>
+          <View>  
+            <Button
+              title="Manually Add Item"
+              onPress={() => alert('Simple Button pressed')}
+            />
+
+            <Button
+              title="Take Picture"
+              onPress={async () => {
+                  router.push('/addItemPhoto');
+              }}
+            />
+          </View>
         </View>
-        {photoUri !== null ? <Image
-        source={{uri: photoUri}}
-        /> : ""}
       </View>
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  stepContainer: {
-    gap: 4,
-    marginBottom: 4,
+  cameraContainer: {
+    height: 400,
+    width: 300,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  camera: {
+    flex: 1,
+    width: '100%',
+  },
+  preview: {
+    height: 400,
+    width: 300,
   },
   recipeBox: {
     flex: 1,
@@ -79,7 +63,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   topRecipes: {
-    flex: 1,
     justifyContent: "center",
     alignItems: "center",
     fontSize: 30,
@@ -90,5 +73,9 @@ const styles = StyleSheet.create({
   recipesText: {
     fontSize: 50,
     color: "black"
+  },
+  headerImage: {
+    width: '100%',
+    height: 200,
   }
 });
