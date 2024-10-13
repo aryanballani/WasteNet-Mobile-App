@@ -34,7 +34,6 @@ def suggest_recipes():
     print(response)
     
     response, status_code = get_gen_ai_reponse(response, bedrock_client)
-    print(4)
 
     return jsonify(response), status_code
 
