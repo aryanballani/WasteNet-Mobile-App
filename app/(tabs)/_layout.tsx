@@ -1,6 +1,5 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -13,9 +12,10 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-      }}>
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="index" // Assuming this is your Home screen
         options={{
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
@@ -24,9 +24,22 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+<<<<<<< Updated upstream
         name="m"
+=======
+        name="menu" // Ensure there's a corresponding 'menu' screen
+>>>>>>> Stashed changes
         options={{
           title: 'm',
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="login" // Change this to lowercase
+        options={{
+          title: 'Login',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
           ),
