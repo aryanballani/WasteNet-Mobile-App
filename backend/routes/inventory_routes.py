@@ -105,7 +105,7 @@ def get_items_by_user_logic(user_id):
     if not user_model.is_userid_taken(user_id):
         return {"status": "error", "message": "Invalid user ID"}, 422
 
-    items = inventory.get_items_by_user(user_id)  # Assuming this method fetches the items
+    items = inventory.get_items_by_user(user_id) 
     if not items:
         return {"status": "error", "message": "No items found for user"}, 404
 

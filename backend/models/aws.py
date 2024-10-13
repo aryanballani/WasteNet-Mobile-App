@@ -80,7 +80,7 @@ def get_gen_ai_reponse(json_input, bedrock_client):
     # }
     message_1 = {
         "role": "user",
-        "content": [{"text": json.dumps(json_input)}]}
+        "content": [{"text": json_input}]}
     messages = []
 
     try:
@@ -120,6 +120,3 @@ def get_gen_ai_reponse(json_input, bedrock_client):
         print(
             f"Finished generating text with model {model_id}.")
 
-
-if __name__ == "__main__":
-    main()

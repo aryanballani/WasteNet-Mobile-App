@@ -26,12 +26,15 @@ def suggest_recipes():
     data = request.get_json()
     user_id = data.get('user_id')
 
-    response, status_code = get_items_by_user_logic(user_id, bedrock_client)
+    response, status_code = get_items_by_user_logic(user_id)
     
     if status_code != 200:
         return jsonify(response), status_code
     
-    response, status_code = get_gen_ai_reponse(response["items"])
+    print(response)
+    
+    response, status_code = get_gen_ai_reponse(response, bedrock_client)
+    print(4)
 
     return jsonify(response), status_code
 
