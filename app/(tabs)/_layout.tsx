@@ -24,13 +24,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-<<<<<<< Updated upstream
-        name="m"
-=======
-        name="menu" // Ensure there's a corresponding 'menu' screen
->>>>>>> Stashed changes
+        name="addItem"
         options={{
-          title: 'm',
+          title: 'Add Item',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'code-slash' : 'code-slash-outline'} color={color} />
           ),

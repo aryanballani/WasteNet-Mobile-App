@@ -5,14 +5,38 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { Collapsible } from '@/components/Collapsible';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {
   useFonts,
   Roboto_400Regular,
   Bangers_400Regular,
   OpenSans_400Regular
 } from "@expo-google-fonts/dev";
+import { NavigationContainer, ParamListBase, RouteProp } from '@react-navigation/native';
+import addItem from './addItem';
 
-export default function HomeScreen() {
+const Stack = createNativeStackNavigator();
+
+const MyStack = () => {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{title: 'Welcome'}}
+        />
+        <Stack.Screen name="Profile" component={addItem} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+};
+
+
+import { NavigationProp } from '@react-navigation/native';
+import { ComponentType } from 'react';
+
+export default function HomeScreen({ navigation }: { navigation: NavigationProp<any> }) {
   let [fontsLoaded] = useFonts({
     Bangers_400Regular,
     Roboto_400Regular
@@ -78,7 +102,7 @@ export default function HomeScreen() {
           <Text style={styles.lower}>Got Groceries?</Text>
           <Button
         title="Add Item"
-        onPress={() => alert('Simple Button pressed')}
+        onPress={() => {navigation.navigate('addItem')}}
       />
         </View>
 
