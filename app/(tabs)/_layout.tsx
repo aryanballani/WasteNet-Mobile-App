@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -9,7 +9,7 @@ export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   return (
-    <View style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       {/* Header Bar */}
       <View style={styles.header}>
         <Text style={styles.headerText}>My App Name</Text>
@@ -52,7 +52,7 @@ export default function TabLayout() {
           />
         </Tabs>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
