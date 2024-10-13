@@ -52,6 +52,21 @@ export default function HomeScreen() {
                 ? item.quantity + parseInt(quantity)
                 : item.quantity - parseInt(quantity);
 
+                const response = await fetch('http://127.0.0.1:5000/inventory/update', {
+                  method: 'PATCH', // Use POST for real-world applications
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ username, password, {updatedQuantity}}),
+                });
+          
+                if (!response.ok) {
+                  Alert.alert('Update Failed', respose.message);
+                  throw new Error(response.error);
+                }
+          
+                const data = await response.json();
+                console.log(data);
             return { ...item, quantity: updatedQuantity };
           }
           return item;
