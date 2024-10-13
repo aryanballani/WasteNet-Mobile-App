@@ -7,7 +7,7 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function HomeScreen() {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<{ name: string; quantity: number; unit: string; expiration: string }[]>([]);
   const [loading, setLoading] = useState(true); // Loading state to handle data fetching
   const [modalVisible, setModalVisible] = useState(false);
   const [currentItem, setCurrentItem] = useState<{ name: string; quantity: number; unit: string; expiration: string } | null>(null);
@@ -25,7 +25,7 @@ export default function HomeScreen() {
       try {
         const userId = await AsyncStorage.getItem('user');
         if (userId) {
-          const response = await fetch(`http://192.168.137.183:5001/inventory/user/${JSON.parse(userId)}`);
+          const response = await fetch(`http://127.0.0.1:5001/inventory/user/${JSON.parse(userId)}`);
           const data = await response.json();
           setItems(data.data);  // Assuming 'data' contains an array of inventory items
         }
@@ -45,7 +45,7 @@ export default function HomeScreen() {
   const updateItemQuantity = () => {
     if (quantity && !isNaN(Number(quantity))) {
       const newItems = items
-        .map((item) => {
+        .map((item: { name: string; quantity: number; unit: string; expiration: string }) => {
           if (currentItem && item.name === currentItem.name) {
             let updatedQuantity =
               operation === 'add'
@@ -65,13 +65,13 @@ export default function HomeScreen() {
     setModalVisible(false);
   };
 
-  const openModal = (item, op: string) => {
+  const openModal = (item: { name: string; quantity: number; unit: string; expiration: string }, op: string) => {
     setCurrentItem(item);
     setOperation(op);
     setModalVisible(true);
   };
 
-  const renderItem = ({ item }: { item }) => (
+  const renderItem = ({ item }: { item: { name: string; quantity: number; unit: string; expiration: string } }) => (
     <View style={styles.card}>
       <View style={styles.cardContent}>
         <Text style={styles.itemTitle}>{item.name}</Text>

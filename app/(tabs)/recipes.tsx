@@ -1,116 +1,124 @@
 import { Image, StyleSheet, View, Text, FlatList, Button } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HomeScreen() {
-    //For backend, randomize this state so more recipes can be made.
-    const [items, setItem] = useState([
-        {name: 'Eggs and spam',
-         ingredients: "Eggs, spam",
-         recipe: '10/10/2021'
-        },
-        {name: 'Rice seaweed',
-         ingredients: "Rice, seaweed",
-         recipe: '10/10/2021'
-        },
-        {name: 'Dominic',
-         ingredients: "Rice, seaweed",
-         recipe: '10/10/2021'
-        }
-      ])
-
-  const removeItem = (item: string): void => {
-    const newItems = items.filter(i => i.name !== item);
-    setItem(newItems);
+  interface Recipe {
+    name: string;
+    ingredients: string;
+    recipe: string;
   }
+
+  const [items, setItems] = useState<Recipe[]>([]);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const user = await AsyncStorage.getItem('user');
+        const userId = user ? JSON.parse(user) : null;
+        if (!userId) {
+          console.error('User ID not found in AsyncStorage');
+          return;
+        }
+
+        const response = await fetch('http://127.0.0.1:5001/recipe', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: userId,
+          }),
+        });
+
+        if (!response.ok) {
+          console.error('Error fetching items:', response.status);
+          return;
+        }
+
+        const data = await response.json();
+        setItems(data); // Assuming data is an array of items
+      } catch (error) {
+        console.error('Error fetching items:', error);
+      }
+    };
+
+    fetchItems();
+  }, []);
+
+  const removeItem = (itemName: string) => {
+    const newItems = items.filter(item => item.name !== itemName);
+    setItems(newItems);
+  };
 
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={<Image/>}>
-      <View>
-        
+      headerImage={<Image />}
+    >
+      <View style={styles.container}>
         <View style={styles.recipeBox}>
-        <View id='recipes-box'>
           <Text style={styles.recipesText}>Recipes</Text>
+
+          <FlatList
+            data={items}
+            keyExtractor={(item) => item.name} // Add keyExtractor for unique keys
+            renderItem={({ item }) => (
+              <View style={styles.recipeCard}>
+                <Button onPress={() => removeItem(item.name)} title={item.name} />
+                <Text style={styles.ingredients}>Ingredients: {item.ingredients}</Text>
+                <Text style={styles.ingredients}>Recipe: {item.recipe}</Text>
+              </View>
+            )}
+            contentContainerStyle={styles.lowerBoxes}
+          />
+
+          <Button
+            title="Generate More"
+            onPress={() => alert('Generate More button pressed')}
+          />
         </View>
-      <View style={styles.lowerBoxes}>
-          <FlatList data={items}
-        renderItem={({item}: {item: {name: string, ingredients: string, recipe: string}}) =>
-            <View style={styles.recipes}>
-                <Button onPress={() => {removeItem(item.name);}} title={item.name}/>
-      <Text style={styles.ingredients}>Ingredients: {item.ingredients}</Text>
-      <Text style={styles.ingredients}>Recipe: {item.recipe}</Text>
-            </View>}/>
-      </View>
-      <Button
-        title="Generate More"
-        onPress={() => alert('Simple Button pressed')}
-        />
-        </View>
-        
       </View>
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  ingredients: {
-    marginLeft: 10,
-  },
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  stepContainer: {
-    gap: 4,
-    marginBottom: 4,
-  },
-  recipes: {
-    marginTop: 30,
-    width: 270,
-    borderWidth: 3,
-    height: 200,
-  },
-  title: {
-    textAlign: 'right',
-    marginTop: 20,
-    position: 'relative',
-    fontSize: 30,
-  },
-  first: {
-    marginTop: -10,
+  container: {
+    flex: 1,
+    padding: 16,
   },
   recipeBox: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   recipesText: {
     fontSize: 50,
-    color: "black"
+    color: 'black',
+    marginBottom: 20,
   },
-  exp: {
-    fontSize: 30,
-    marginTop: 40,
-    marginLeft: 20,
-    marginRight: 20,
-    backgroundColor: 'white',
-    width: 130,
-    borderWidth: 3,
-    padding: 5,
-  }, 
-  lowerBoxes: {
-    marginLeft: 30,
+  recipeCard: {
+    marginTop: 30,
+    width: 300,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 16,
+    borderRadius: 8,
+    backgroundColor: '#fff',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  ingredients: {
     marginTop: 10,
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: 'space-between'
+    fontSize: 16,
+    color: '#333',
   },
-  lower: {
-    fontSize: 20
-  }, list: {
-    fontSize: 18,
-  }
+  lowerBoxes: {
+    paddingBottom: 20,
+  },
 });

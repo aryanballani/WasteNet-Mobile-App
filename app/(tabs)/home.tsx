@@ -4,8 +4,6 @@ import { useFonts, Roboto_400Regular, Roboto_700Bold } from "@expo-google-fonts/
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedView } from '@/components/ThemedView';
-import { Collapsible } from '@/components/Collapsible';
 import { SvgXml } from 'react-native-svg';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -22,7 +20,6 @@ const headerSvg = `
   </text>
 </svg>
 `;
-
 export default function HomeScreen() {
   const router = useRouter();
   const [topInventory, setTopInventory] = useState([]);
@@ -34,11 +31,10 @@ export default function HomeScreen() {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log("waiting for data");
       try {
         const userId = await AsyncStorage.getItem('user');
         if (userId) {
-          const response = await fetch(`http://192.168.137.183:5001/inventory/user/${JSON.parse(userId)}`);
+          const response = await fetch(`http://127.0.0.1:5001/inventory/user/${JSON.parse(userId)}`);
           if (response.ok) {
             const data = await response.json();
             setTopInventory(data.data);
@@ -49,7 +45,7 @@ export default function HomeScreen() {
           }
         }
       } catch (error) {
-        console.error('Error fetching inventory:', error.stack);
+        console.error('Error fetching inventory:', error);
       } finally {
         setIsLoading(false);
       }
@@ -79,8 +75,6 @@ export default function HomeScreen() {
   );
 
   const formatExpiryDate = (dateString: string | number | Date) => {
-    console.log("1")
-    console.log(dateString);
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
@@ -94,46 +88,47 @@ export default function HomeScreen() {
         </View>
       }
     >
-      <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Top Recipes</Text>
-            <TouchableOpacity
-              style={styles.recipeButton}
-              onPress={() => router.push('/recipes')}
-            >
-              <Text style={styles.recipeButtonText}>Discover New Recipes</Text>
-              <Ionicons name="fast-food-outline" size={24} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
+      <View style={styles.container}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Top Recipes</Text>
+          <TouchableOpacity
+            style={styles.recipeButton}
+            onPress={() => router.push('/recipes')}
+          >
+            <Text style={styles.recipeButtonText}>Discover New Recipes</Text>
+            <Ionicons name="fast-food-outline" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
+        </View>
 
-          <View style={styles.row}>
-            <View style={[styles.section, styles.halfWidth]}>
-              <Text style={styles.sectionTitle}>Upcoming Exp.</Text>
-              {topInventory.length > 0 ? (
-              <FlatList
-                data={topInventory}
-                renderItem={renderInventoryItem}
-                keyExtractor={(item) => item._id.toString()}
-              />
-            ) : (
-              <Text style={styles.emptyInventoryText}>Add items to see them here!</Text>
-            )}
-            </View>
+        {/* Vertical layout for Inventory and Add Items */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Upcoming Exp.</Text>
+          {topInventory.length > 0 ? (
+            <FlatList
+              data={topInventory}
+              renderItem={renderInventoryItem}
+              keyExtractor={(item) => item._id.toString()}
+            />
+          ) : (
+            <Text style={styles.emptyInventoryText}>Add items to see them here!</Text>
+          )}
+        </View>
 
-            <View style={[styles.section, styles.halfWidth]}>
-              <Text style={styles.sectionTitle}>Got Groceries?</Text>
-              <TouchableOpacity
-                style={styles.addItemButton}
-                onPress={() => router.push('/addItem')}
-              >
-                <Ionicons name="add-circle-outline" size={24} color="#FFFFFF" />
-                <Text style={styles.addItemButtonText}>Add New Items</Text>
-              </TouchableOpacity>
-              <Text style={styles.groceryHelperText}>
-                Add your groceries to keep track of your pantry and get recommendations!
-              </Text>
-            </View>
-          </View>
-      </ParallaxScrollView>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Got Groceries?</Text>
+          <TouchableOpacity
+            style={styles.addItemButton}
+            onPress={() => router.push('/addItem')}
+          >
+            <Ionicons name="add-circle-outline" size={24} color="#FFFFFF" />
+            <Text style={styles.addItemButtonText}>Add New Items</Text>
+          </TouchableOpacity>
+          <Text style={styles.groceryHelperText}>
+            Add your groceries to keep track of your pantry and get recommendations!
+          </Text>
+        </View>
+      </View>
+    </ParallaxScrollView>
   );
 }
 
@@ -148,9 +143,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-  },
-  contentContainer: {
-    flex: 1,
   },
   section: {
     backgroundColor: '#FFFFFF',
@@ -168,13 +160,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto_700Bold',
     marginBottom: 12,
     color: '#333333',
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  halfWidth: {
-    width: '48%',
   },
   inventoryItem: {
     paddingVertical: 12,

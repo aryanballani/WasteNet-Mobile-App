@@ -6,11 +6,12 @@ from flask_cors import CORS     # type: ignore
 
 app = Flask(__name__)
 
-CORS(app, resources={r"/*": {
-    "origins": "*",
-    "methods": ["GET", "POST", "OPTIONS"],
-    "allow_headers": ["Content-Type", "Authorization"]
-}})
+CORS(app, origins=['http://localhost:8081'])
+# CORS(app, resources={r"/*": {
+#     "origins": "*",
+#     "methods": ["GET", "POST", "OPTIONS"],
+#     "allow_headers": ["Content-Type", "Authorization"]
+# }})
 
 # Register Blueprints (API Routes)
 app.register_blueprint(inventory_bp, url_prefix='/inventory')
