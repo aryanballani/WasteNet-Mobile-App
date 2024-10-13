@@ -76,9 +76,17 @@ def add_item():
 def update_inventory():
     data = request.get_json()  # Get the JSON data from the request body
     name = data.get('name')
-    expiry_date = data.get('expiry_date')
+    expiry_date = datetime.strptime(data.get('expiry_date'), '%Y-%m-%d')
     update_data = data.get('update_data')  # Get the updated data from the request body
 
+    if update_data <= 0:
+        deleted = inventory.delete_item(name, expiry_date)
+
+        if deleted:
+            return jsonify({"status": "success", "message": "Item successfully deleted"}), 200
+        else:
+            return jsonify({"status": "error", "message": "Error while deleting item"}), 400
+    
     # Validate the input
     if not name or not expiry_date:
         return jsonify({"status": "error", "message": "Missing name or expiry_date"}), 400
@@ -99,6 +107,30 @@ def update_inventory():
         return jsonify({"status": "error", "message": "No item found to update"}), 404
 
     return jsonify({"status": "success", "data": str(updated_item)}), 200
+
+# 6. DELETE /delete -> Delete an item
+@inventory_bp.route('/delete', methods=['DELETE'])
+def delete_item():
+    data = request.json
+    try:
+        # Extracting the required fields from the request body
+        expiry_date = datetime.strptime(data.get('expiry_date'), '%Y-%m-%d') 
+        name = data.get('name')
+
+        if not name or not expiry_date:
+            raise ValueError("Missing item ID or user ID")
+
+        # Call the inventory service to delete the item
+        deleted = inventory.delete_item(name, expiry_date)
+
+        if deleted:
+            return jsonify({"status": "success", "message": "Item successfully deleted"}), 200
+        else:
+            return jsonify({"status": "error", "message": "Error while deleting item"}), 400
+
+    except (ValueError, TypeError) as e:
+        print(e)
+        return jsonify({"status": "error", "message": "Invalid input data"}), 422
 
 
 def get_items_by_user_logic(user_id):

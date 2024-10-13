@@ -68,7 +68,14 @@ class Inventory:
             doc['_id'] = str(doc['_id'])  # Convert ObjectId to string
             items.append(doc)
         return items
-    
+        
+    def delete_item(name, expiry_date):
+        item = self.collection.find_one({"name": name, "expiry_date": expiry_date})
+        
+        if item:
+            self.collection.delete_one({"name": name, "expiry_date": expiry_date})
+            return True
+        return False
 
     def get_items(self):
         docs = self.collection.find()
