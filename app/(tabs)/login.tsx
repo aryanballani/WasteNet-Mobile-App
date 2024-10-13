@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router'; // For navigation
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
@@ -36,9 +37,10 @@ const LoginScreen = () => {
       const data = await response.json();
       console.log(data);
       // Alert.alert('Success', `Welcome, ${data.username}!`);
-      localStorage.setItem('user', JSON.stringify(data.token));
+      // localStorage.setItem('user', JSON.stringify(data.token));
+      AsyncStorage.setItem('user', JSON.stringify(data.token))
       // Redirect or navigate to another screen on successful login
-      router.push('/'); // Change '/home' to your home screen route
+      router.push('/home'); // Change '/home' to your home screen route
 
     } catch (error) {
       if (error instanceof Error) {
