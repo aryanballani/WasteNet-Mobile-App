@@ -2,9 +2,11 @@ from flask import Blueprint, request, jsonify       # type: ignore
 from models.inventory import Inventory
 from datetime import datetime
 
+
 inventory_bp = Blueprint('inventory', __name__)
 
 inventory = Inventory()
+
 
 # 1. GET / -> list all items
 @inventory_bp.route('/', methods=['GET'])
