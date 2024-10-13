@@ -3,17 +3,15 @@ import os
 from datetime import datetime, timedelta
 from dotenv import load_dotenv  # Import load_dotenv to read .env variables
 from models.users import Users  # Assuming you have a User model
-
-# Load environment variables from .env file
-load_dotenv()
+import jwt
 
 user_bp = Blueprint('user', __name__)
 
 user_model = Users()
 SECRET_KEY = os.getenv('SECRET_KEY')  # Get the secret key from environment variables
 
-# 1. POST /user/login -> Login and authenticate user
-@user_bp.route('/user/login', methods=['POST'])
+# 1. POST /login -> Login and authenticate user
+@user_bp.route('/login', methods=['POST'])
 def login_user():
     data = request.json
     username = data.get('username')
@@ -35,8 +33,8 @@ def login_user():
     else:
         return jsonify({"status": "error", "message": "Invalid username or password"}), 401
 
-# 2. POST /user -> Create a new user
-@user_bp.route('/user', methods=['POST'])
+# 2. POST /create -> Create a new user
+@user_bp.route('/create', methods=['POST'])
 def create_user():
     data = request.json
     username = data.get('username')
@@ -56,8 +54,8 @@ def create_user():
     else:
         return jsonify({"status": "error", "message": "Error while creating user"}), 400
 
-# Additional: GET /user/protected -> Protected endpoint example
-@user_bp.route('/user/protected', methods=['GET'])
+# Additional: GET /protected -> Protected endpoint example
+@user_bp.route('/protected', methods=['GET'])
 def protected_route():
     token = request.headers.get('Authorization')
 
