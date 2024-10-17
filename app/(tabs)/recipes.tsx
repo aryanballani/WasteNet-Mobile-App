@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, View, Text, FlatList, Button, Alert } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { get_gen_ai_reponse } from '../../backend/model/aws';
+import {suggest_recipes} from '../../backend/model/recipe';
 
 interface Recipe {
   name: string;
@@ -25,32 +27,12 @@ export default function HomeScreen() {
         return;
       }
 
-      const response = await fetch('http://127.0.0.1:5001/recipe', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: userId,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      if (Array.isArray(data)) {
-        setItems(data);
-      } else {
-        console.error('Unexpected data format:', data);
-        Alert.alert('Error', 'Unexpected data format received');
-      }
-    } catch (error) {
-      console.error('Error fetching items:', error);
-      Alert.alert('Error', 'Failed to fetch recipes');
-    }
-  };
+          const response = suggest_recipes(userId);
+          setItems(response);
+        } catch (error) {
+          Alert.alert('Error', 'Failed to fetch items');
+        }
+      };
 
   const removeItem = (itemName: string) => {
     const newItems = items.filter(item => item.name !== itemName);

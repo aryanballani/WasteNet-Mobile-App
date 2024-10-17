@@ -15,7 +15,7 @@ CORS(app, resources={r"/*": {"origins": "*", "methods": ["GET", "POST", "OPTIONS
 
 # Register Blueprints (API Routes)
 app.register_blueprint(inventory_bp, url_prefix='/inventory')
-app.register_blueprint(recipe_bp, url_prefix='/recipes')
+# app.register_blueprint(recipe_bp, url_prefix='/recipes')
 app.register_blueprint(user_bp, url_prefix='/users')
 
 if __name__ == "__main__":

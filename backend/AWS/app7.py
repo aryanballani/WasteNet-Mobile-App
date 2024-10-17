@@ -2,19 +2,19 @@ import logging
 import boto3
 from botocore.exceptions import ClientError
 from PIL import Image
-# import pytesseract
+import pytesseract
 
-# # If you are on Windows, specify the path to the Tesseract executable
-# pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+# If you are on Windows, specify the path to the Tesseract executable
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
-# # Open an image file
-# img = Image.open('veggie-grocery-receipt_orig.jpeg')
+# Open an image file
+img = Image.open('pic1.jpg')
 
-# # Use pytesseract to extract text
-# text = pytesseract.image_to_string(img)
+# Use pytesseract to extract text
+text = pytesseract.image_to_string(img)
 
-# # Print the extracted text
-# print(text)
+# Print the extracted text
+print(text)
 
 
 
@@ -80,43 +80,36 @@ def main():
 
     # Setup the system prompts and messages to send to the model.
     system_prompts = [{"text": 
-                       """You are an NLP parser. You will be given a data like this
-                       ZUCHINNI GREEN $4.66
-                        0.778kg NET @ $5.99/kg
-                        BANANA CAVENDISH $1.32
-                        0.442kg NET @ $2.99/kg
-                        POTATOES BRUSHED $3.97
-                        1.328kg NET @ $2.99/kg
-                        GRAPES GREEN $7.03
-                        1.174kg NET @ $5.99/kg
-                        PEAS SNOW $3.27. I want you to parse this by giving me the output in the following json format:
-                        {
-  "items": [
-    {
-      "name": "BANANA CAVENDISH",
-      "weight": 1.326
-    },
-    {
-      "name": "GRAPES GREEN",
-      "weight": 3.522
-    },
-    {
-      "name": "PEAS SNOW",
-      "weight": 0.654
-    },
-    {
-      "name": "POTATOES BRUSHED",
-      "weight": 3.984
-    },
-    {
-      "name": "ZUCHINNI GREEN",
-      "weight": 2.334
-    }
-  ]
-}"""}]
+#                        """You are an NLP parser. You will be given a data like this
+#                       large eggs
+#                       milk
+#                       cottage cheese
+#                       natural yogurt
+#                       cherry tomatoes
+#                       cheese crackers. I want you to parse this by giving me the output like in the following json format:
+#                         {
+#   "items": [
+#     {
+#       "name": "Large Eggs",
+#     },
+#     {
+#       "name": "Milk",
+#     },
+#     {
+#       "name": "Cottage Cheese",
+#     },
+#     {
+#       "name": "Natural Yogurt",
+#     },
+#     {
+#       "name": "Cherry Tomatoes",
+#     }
+#   ]
+# }
+"Now generate 3 recipes for me based on the above ingredients."}]
 
     # Define the user message directly as a variable
-    user_text = "pls generate anything"
+    user_text = text
 
     # Create a message using the provided user input
     message_1 = {

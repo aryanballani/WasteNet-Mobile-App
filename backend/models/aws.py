@@ -9,7 +9,7 @@ import boto3
 import json
 from botocore.exceptions import ClientError
 from flask import Blueprint, request, jsonify       # type: ignore
-from models.inventory import Inventory
+from inventory import Inventory
 from datetime import datetime
 import uuid
 
@@ -31,12 +31,12 @@ def search_dynamodb_for_input(input_data):
     """
     try:
         # Query the table for matching InputData
-        text = "Name Quantity Unit_of_measurement Expiry_date\n"
-        for x in input_data["data"]:
-            text += x['name'] + " " + str(x['quantity']) + " " + x['unit_of_measurement'] + " " + str(x['expiry_date']) + "\n"
+        # text = "Name Quantity Unit_of_measurement Expiry_date\n"
+        # for x in input_data["data"]:
+        #     text += x['name'] + " " + str(x['quantity']) + " " + x['unit_of_measurement'] + " " + str(x['expiry_date']) + "\n"
         response = table.scan(
             FilterExpression="InputData = :input_data",
-            ExpressionAttributeValues={":input_data": text}
+            ExpressionAttributeValues={":input_data": json.dumps(input_data)}
         )
         items = response.get('Items', [])
         if items:
@@ -48,13 +48,13 @@ def search_dynamodb_for_input(input_data):
         return None
 
 def store_results_in_dynamodb(result_id, input_data, bedrock_response):
-    text = "Name Quantity Unit_of_measurement Expiry_date\n"
-    for x in input_data["data"]:
-        text += x['name'] + " " + str(x['quantity']) + " " + x['unit_of_measurement'] + " " + str(x['expiry_date']) + "\n"
+    # text = "Name Quantity Unit_of_measurement Expiry_date\n"
+    # for x in input_data["data"]:
+    #     text += x['name'] + " " + str(x['quantity']) + " " + x['unit_of_measurement'] + " " + str(x['expiry_date']) + "\n"
     table.put_item(
         Item={
             'result_id': result_id,
-            'InputData': text,  # Store as JSON string
+            'InputData': json.dumps(input_data),  # Store as JSON string
             'BedrockResponse': json.dumps(bedrock_response),  # Store as JSON string
             'Timestamp': datetime.utcnow().isoformat()
         }
@@ -116,7 +116,7 @@ def get_gen_ai_reponse(json_input, bedrock_client):
 
     model_id = "anthropic.claude-3-sonnet-20240229-v1:0"
 
-    prompt = """
+    system_prompts = """
     You are an app that creates recipes for a user. 
     You will be given a list of ingredients, expiry date and instructions. 
     You will create 3 recipes for the user. 
@@ -128,19 +128,14 @@ def get_gen_ai_reponse(json_input, bedrock_client):
     """
 
     # Setup the system prompts and messages to send to the model.
-    system_prompts = [{"text": prompt}]
-    # message_1 = {
-    #     "role": "user",
-    #     "content": [{"text": "These are my ingredients: potato, grapes, beets. Create 1 recipes using only these."}]
-    # }
-    text = "Name Quantity Unit_of_measurement Expiry_date\n"
-    for x in json_input["data"]:
-        text += x['name'] + " " + str(x['quantity']) + " " + x['unit_of_measurement'] + " " + str(x['expiry_date']) + "\n"
+    # prompt = [{"text": prompt}]
     message_1 = {
         "role": "user",
-        "content": [{"text": text}]
+        "content": [{"text": "These are my ingredients: potato, grapes, beets. Create 1 recipes using only these."}]
     }
-    messages = []
+    messages =[]
+    # text = "Name Quantity Unit_of_measurement Expiry_date\n"
+    # json_input = "Based on the "
 
     try:
 
@@ -186,4 +181,3 @@ def get_gen_ai_reponse(json_input, bedrock_client):
     else:
         print(
             f"Finished generating text with model {model_id}.")
-
