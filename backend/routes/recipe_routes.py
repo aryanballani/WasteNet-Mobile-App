@@ -8,9 +8,15 @@ load_dotenv()
 
 # recipe_bp = Blueprint('recipes', __name__)
 
+<<<<<<< HEAD
 # # 1. POST /recipe -> Get recipes based on user inventory
 # # Body: user_id
 # @recipe_bp.route('', methods=['POST'])
+=======
+# 1. POST /recipe -> Get recipes based on user inventory
+# Body: user_id
+@recipe_bp.route('/', methods=['POST'])
+>>>>>>> 241694e86de33988439da98a30f02564483d56b2
 def suggest_recipes():
     aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
     aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
@@ -33,8 +39,12 @@ def suggest_recipes():
     
     return response, bedrock_client
     
+<<<<<<< HEAD
     # response, status_code = get_gen_ai_reponse(response, bedrock_client)
     # print(4)
+=======
+    response, status_code = get_gen_ai_reponse(response, bedrock_client)
+>>>>>>> 241694e86de33988439da98a30f02564483d56b2
 
     # return jsonify(response), status_code
 

@@ -56,7 +56,6 @@ def add_item():
         expiry_date = datetime.strptime(data.get('expiry_date'), '%Y-%m-%d')
         unit_of_measure = data.get('unit_of_measurement')
         user_id = data.get('user_id')[1:-1]
-        print(user_id)
 
         if not name or quantity <= 0:
             raise ValueError("Invalid data types or values")

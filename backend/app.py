@@ -19,5 +19,5 @@ app.register_blueprint(inventory_bp, url_prefix='/inventory')
 app.register_blueprint(user_bp, url_prefix='/users')
 
 if __name__ == "__main__":
-    app.run( port=5001)  # Ensure this is set
+    app.run(debug=True, host='0.0.0.0', port=5001)  # Ensure this is set
 

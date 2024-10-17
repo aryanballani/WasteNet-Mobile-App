@@ -54,8 +54,8 @@ def store_results_in_dynamodb(result_id, input_data, bedrock_response):
     table.put_item(
         Item={
             'result_id': result_id,
-            'InputData': json.dumps(input_data),  # Store as JSON string
-            'BedrockResponse': json.dumps(bedrock_response),  # Store as JSON string
+            'InputData': " ",  # Store as JSON string
+            'BedrockResponse': json.dump(bedrock_response),  # Store as JSON string
             'Timestamp': datetime.utcnow().isoformat()
         }
     )
@@ -153,7 +153,7 @@ def get_gen_ai_reponse(json_input, bedrock_client):
 
         # Add the response message to the conversation.
         output_message = response['output']['message']
-        output_message = jsonify(output_message["content"][0]["text"])
+        output_message = output_message["content"][0]["text"]
         store_results_in_dynamodb(result_id, json_input, output_message)
         
         return output_message, 200
